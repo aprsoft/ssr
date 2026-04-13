@@ -1,0 +1,2 @@
+[10-Nov-2025 22:33:50 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home2/aprsoftc/public_html/website/PHPMailer/src/PHPMailer.php on line 27
+[10-Nov-2025 22:37:39 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home2/aprsoftc/public_html/website/PHPMailer/src/PHPMailer.php on line 31

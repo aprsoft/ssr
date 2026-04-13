@@ -1,0 +1,79 @@
+================================================================
+INTEGRACIÓN SPATIE LARAVEL-PERMISSION CON STANCL TENANCY V3
+================================================================
+
+PROBLEMA
+--------
+Al usar spatie/laravel-permission con stancl/tenancy en un entorno 
+multi-tenant, el cache de permisos y roles es compartido entre todos 
+los tenants, lo que puede causar que un tenant vea los permisos de otro.
+
+SOLUCIÓN 1 - Evento TenancyBootstrapped
+----------------------------------------
+Fuente: https://www.answeroverflow.com/m/1180409835309764628
+(Hilo de integración Stancl Tenancy + Filament)
+
+Agregar en TenancyServiceProvider dentro de events() o boot():
+
+    use Stancl\Tenancy\Events\TenancyBootstrapped;
+    use Spatie\Permission\PermissionRegistrar;
+
+    Event::listen(TenancyBootstrapped::class, function (TenancyBootstrapped $event) {
+        app(PermissionRegistrar::class)->cacheKey = 
+            'spatie.permission.cache.tenant.' . $event->tenancy->tenant->id;
+    });
+
+
+SOLUCIÓN 2 - Bootstrapper dedicado (RECOMENDADA)
+-------------------------------------------------
+Fuente: https://github.com/spatie/laravel-permission/discussions/2310
+(Discusión oficial en el repositorio de spatie/laravel-permission)
+
+Paso 1: Crear el archivo app/Tenancy/Bootstrappers/PermissionCacheBootstrapper.php
+
+    <?php
+
+    namespace App\Tenancy\Bootstrappers;
+
+    use Illuminate\Contracts\Foundation\Application;
+    use Spatie\Permission\PermissionRegistrar;
+    use Stancl\Tenancy\Contracts\TenancyBootstrapper;
+    use Stancl\Tenancy\Contracts\Tenant;
+
+    class PermissionCacheBootstrapper implements TenancyBootstrapper
+    {
+        public function __construct(protected Application $app) {}
+
+        public function bootstrap(Tenant $tenant): void
+        {
+            $this->app[PermissionRegistrar::class]->cacheKey = 
+                'spatie.permission.cache.tenant.' . $tenant->id;
+        }
+
+        public function revert(): void
+        {
+            $this->app[PermissionRegistrar::class]->cacheKey = 'spatie.permission.cache';
+        }
+    }
+
+Paso 2: Registrar en config/tenancy.php
+
+    'bootstrappers' => [
+        // ... los bootstrappers existentes
+        App\Tenancy\Bootstrappers\PermissionCacheBootstrapper::class,
+    ],
+
+POR QUÉ ES MEJOR LA SOLUCIÓN 2
+--------------------------------
+El bootstrapper se ejecuta automáticamente cada vez que se inicializa 
+un tenant, es más limpio y no requiere escuchar eventos manualmente.
+Además, implementa revert() para restaurar el estado original cuando 
+se revierte la tenancy.
+
+DOCUMENTACIÓN OFICIAL
+----------------------
+- Spatie Permission:     https://spatie.be/docs/laravel-permission/v7/installation-laravel
+- Stancl Tenancy:        https://tenancyforlaravel.com/docs/v3/integrations/spatie/
+- Tenancy Bootstrappers: https://tenancyforlaravel.com/docs/v3/tenancy-bootstrappers/
+
+================================================================

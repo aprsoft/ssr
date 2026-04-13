@@ -1,0 +1,234 @@
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom right, #f5f5f5, #d6d6d6);
+    scroll-behavior: smooth;
+}
+
+header {
+    background: linear-gradient(to right, #e6e6e6, #bdbdbd);
+    color: #222;
+    padding: 40px 20px;
+    text-align: center;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+.header-content img { width: 80px; }
+.header-content h1 { font-size: 2.8em; font-weight: bold; }
+header p { font-size: 1.2em; margin-top: 10px; }
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    gap: 40px;
+}
+.intro-left img { max-width: 400px; border-radius: 10px; }
+.intro-text { font-size: 1.1em; text-align: center; max-width: 600px; }
+
+.contact {
+    flex: 1 1 250px;
+    max-width: 320px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.contact h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #3da63d;
+    font-size: 1.3em;
+}
+.contact form { display: flex; flex-direction: column; gap: 8px; }
+.contact label { font-weight: bold; font-size: 0.9em; margin-bottom: 3px; }
+.contact input, .contact textarea {
+    padding: 6px 8px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    width: 100%;
+    resize: none;
+    transition: border-color 0.3s;
+}
+.contact input.valid, .contact textarea.valid { border-color: green; }
+.contact input.invalid, .contact textarea.invalid { border-color: red; }
+
+.char-counter {
+    font-size: 0.8em;
+    text-align: right;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+button {
+    background: linear-gradient(135deg, #6fd36f, #3da63d);
+    color: white;
+    padding: 6px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+button:hover { background: linear-gradient(135deg, #7ee57e, #45b845); transform: scale(1.05); }
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f0f0f0;
+    color: #555;
+    padding: 20px 40px;
+    flex-wrap: wrap;
+}
+footer a.whatsapp-link { color: #25D366; text-decoration: none; font-weight: bold; font-size: 1.1em; }
+footer a.whatsapp-link:hover { color: #1ebe5d; }
+footer i.fab.fa-whatsapp { margin-right: 6px; font-size: 1.3em; }
+
+.status-message {
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 6px;
+    display: none;
+}
+.status-success { color: #2e7d32; }
+.status-error { color: #c62828; }
+
+@media (min-width: 992px) {
+    .content { flex-direction: row; align-items: flex-start; justify-content: center; gap: 50px; }
+    .intro-text { flex: 1 1 400px; max-width: 500px; text-align: left; }
+    .intro-left img { max-width: 420px; }
+    .contact { flex: 0 0 320px; }
+}
+style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom right, #f5f5f5, #d6d6d6);
+    scroll-behavior: smooth;
+}
+
+header {
+    background: linear-gradient(to right, #e6e6e6, #bdbdbd);
+    color: #222;
+    padding: 40px 20px;
+    text-align: center;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+.header-content img { width: 80px; }
+.header-content h1 { font-size: 2.8em; font-weight: bold; }
+header p { font-size: 1.2em; margin-top: 10px; }
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    gap: 40px;
+}
+.intro-left img { max-width: 400px; border-radius: 10px; }
+.intro-text { font-size: 1.1em; text-align: center; max-width: 600px; }
+
+.contact {
+    flex: 1 1 250px;
+    max-width: 320px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.contact h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #3da63d;
+    font-size: 1.3em;
+}
+.contact form { display: flex; flex-direction: column; gap: 8px; }
+.contact label { font-weight: bold; font-size: 0.9em; margin-bottom: 3px; }
+.contact input, .contact textarea {
+    padding: 6px 8px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    width: 100%;
+    resize: none;
+    transition: border-color 0.3s;
+}
+.contact input.valid, .contact textarea.valid { border-color: green; }
+.contact input.invalid, .contact textarea.invalid { border-color: red; }
+
+.char-counter {
+    font-size: 0.8em;
+    text-align: right;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+button {
+    background: linear-gradient(135deg, #6fd36f, #3da63d);
+    color: white;
+    padding: 6px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+button:hover { background: linear-gradient(135deg, #7ee57e, #45b845); transform: scale(1.05); }
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f0f0f0;
+    color: #555;
+    padding: 20px 40px;
+    flex-wrap: wrap;
+}
+footer a.whatsapp-link { color: #25D366; text-decoration: none; font-weight: bold; font-size: 1.1em; }
+footer a.whatsapp-link:hover { color: #1ebe5d; }
+footer i.fab.fa-whatsapp { margin-right: 6px; font-size: 1.3em; }
+
+.status-message {
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 6px;
+    display: none;
+}
+.status-success { color: #2e7d32; }
+.status-error { color: #c62828; }
+
+@media (min-width: 992px) {
+    .content { flex-direction: row; align-items: flex-start; justify-content: center; gap: 50px; }
+    .intro-text { flex: 1 1 400px; max-width: 500px; text-align: left; }
+    .intro-left img { max-width: 420px; }
+    .contact { flex: 0 0 320px; }
+}
+
+img.logo {
+    width: 15px;
+    height: auto; /* Mantiene la proporción original */
+}
+</style>
+</head>
+

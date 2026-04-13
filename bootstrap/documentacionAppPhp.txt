@@ -1,0 +1,239 @@
+================================================================================
+DOCUMENTACION TECNICA: bootstrap/app.php con Multi-Tenancy (Laravel 12)
+================================================================================
+
+Archivo: bootstrap/app.php
+Framework: Laravel 12
+Paquete Multi-Tenancy: stancl/tenancy
+Fecha de documentacion: 2026-04-09
+
+================================================================================
+1. ESTRUCTURA BASE DE LARAVEL 12
+================================================================================
+
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Stancl\Tenancy\Tenancy;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+
+return Application::configure(basePath: dirname(__DIR__))
+
+EXPLICACION:
+- Application::configure(): Metodo estatico introducido en Laravel 11/12 que 
+  reemplaza la antigua estructura de RouteServiceProvider.
+- basePath: dirname(__DIR__): Define la ruta base de la aplicacion 
+  (directorio padre de bootstrap/).
+
+Referencia: Documentacion oficial de Laravel 12 - Application Configuration
+
+================================================================================
+2. CONFIGURACION DE RUTAS CON withRouting()
+================================================================================
+
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+        using: function(){ 
+            // Logica personalizada de enrutamiento...
+        }
+    )
+
+PARAMETROS ESTANDAR:
+- web: Ruta al archivo de rutas web (tradicionalmente routes/web.php).
+- commands: Ruta al archivo de comandos de consola (routes/console.php).
+- health: Endpoint de verificacion de salud (/up) utilizado por servicios 
+  como Laravel Forge o Docker.
+
+EL PARAMETRO CRITICO: using
+
+"Puedes tomar control completo sobre el registro de rutas proporcionando un 
+closure 'using' al metodo withRouting. Cuando se pasa este argumento, ninguna 
+ruta HTTP sera registrada por el framework y tu eres responsable de registrar 
+manualmente todas las rutas."
+
+Este closure ANULA el comportamiento automatico de carga de rutas y permite 
+logica condicional compleja basada en el dominio.
+
+Referencia: Documentacion oficial de Laravel 12 - Routing Customization
+
+================================================================================
+3. LOGICA DE ENRUTAMIENTO MULTI-TENANT
+================================================================================
+
+El closure 'using' implementa una estrategia de TRES CAPAS para separar rutas 
+centrales y de tenant.
+
+--------------------------------------------------------------------------------
+3.1 RUTAS CENTRALES (routes/central.php)
+--------------------------------------------------------------------------------
+
+        $centralDomains = config('tenancy.central_domains');
+        $currentHost = request()->getHost();
+        
+        // 1. Rutas CENTRALES: solo en dominios centrales
+        foreach ($centralDomains as $domain) {
+            Route::middleware('web')
+                ->domain($domain)
+                ->group(base_path('routes/central.php'));
+        }
+
+PROPOSITO: Registra rutas administrativas o de gestion que solo deben existir 
+en dominios centrales (ej: admin.misitio.com, app.misitio.com).
+
+- Route::domain($domain): Restringe estas rutas a dominios especificos.
+- middleware('web'): Aplica el grupo de middleware web (sesiones, CSRF, etc.).
+
+--------------------------------------------------------------------------------
+3.2 RUTAS WEB PUBLICAS (routes/web.php)
+--------------------------------------------------------------------------------
+
+        // 2. Rutas WEB: solo en dominios centrales (landing page)
+        if (in_array($currentHost, $centralDomains)) {
+            Route::middleware('web')
+                ->domain($currentHost)
+                ->group(base_path('routes/web.php'));
+        }
+
+PROPOSITO: Carga las rutas web tradicionales (landing page, marketing, registro) 
+solo si el host actual es un dominio central.
+
+Esta condicion evita que las rutas publicas sean accesibles desde subdominios 
+de tenant (ej: cliente.misitio.com no mostrara la landing page).
+
+--------------------------------------------------------------------------------
+3.3 RUTAS DE TENANT (routes/tenant.php)
+--------------------------------------------------------------------------------
+
+        // 3. Rutas TENANT: en cualquier otro dominio
+        else {
+            Route::middleware([
+                'web',
+                InitializeTenancyByDomain::class,
+                PreventAccessFromCentralDomains::class,
+            ])->group(base_path('routes/tenant.php'));
+        }
+
+MIDDLEWARE CRITICOS DEL PAQUETE stancl/tenancy:
+
+InitializeTenancyByDomain
+    Identifica el tenant basado en el dominio de la solicitud e inicializa 
+    el contexto de tenencia (cambia la base de datos, configura el tenant activo).
+
+PreventAccessFromCentralDomains
+    Bloquea el acceso 404 si alguien intenta acceder a rutas de tenant desde 
+    un dominio central.
+
+Documentacion stancl/tenancy: "Para evitar esto, usa el middleware 
+PreventAccessFromCentralDomains en todas tus rutas de tenant. Este middleware 
+abortara con un 404 si el usuario intenta visitar una ruta de tenant en un 
+dominio central."
+
+================================================================================
+4. CONFIGURACION DE MIDDLEWARE GLOBAL
+================================================================================
+
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->group('universal', []);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if (app(Tenancy::class)->initialized) {
+                return route('tenant.login');
+            }
+            return route('central.login');
+        });
+    })
+
+--------------------------------------------------------------------------------
+4.1 GRUPO universal
+--------------------------------------------------------------------------------
+
+        $middleware->group('universal', []);
+
+Este grupo vacio es un MARCADOR/FLAG utilizado por la caracteristica 
+Universal Routes de stancl/tenancy. Permite definir rutas que funcionan tanto 
+en contexto central como de tenant.
+
+Documentacion stancl/tenancy: "Usaremos este grupo de middleware como una 
+'bandera' en la ruta, para marcarla como una ruta universal. No necesitamos 
+ningun middleware real dentro del grupo."
+
+--------------------------------------------------------------------------------
+4.2 REDIRECCION DINAMICA DE INVITADOS
+--------------------------------------------------------------------------------
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if (app(Tenancy::class)->initialized) {
+                return route('tenant.login');
+            }
+            return route('central.login');
+        });
+
+LOGICA:
+- Verifica si la tenencia esta inicializada mediante app(Tenancy::class)->initialized
+- Si es un tenant activo: redirige a tenant.login
+- Si es contexto central: redirige a central.login
+
+Esto permite tener DOS FLUJOS DE AUTENTICACION SEPARADOS: uno para 
+administradores/operadores centrales y otro para usuarios de tenants especificos.
+
+================================================================================
+5. MANEJO DE EXCEPCIONES
+================================================================================
+
+    ->withExceptions(function (Exceptions $exceptions): void {
+        //
+    })
+
+Placeholder para configuracion personalizada de excepciones. En Laravel 12, 
+este closure reemplaza la configuracion previa en App\Exceptions\Handler.
+
+================================================================================
+6. CREACION DE LA APLICACION
+================================================================================
+
+    ->create();
+
+Finaliza la configuracion y devuelve la instancia de la aplicacion Laravel 
+lista para ejecutarse.
+
+================================================================================
+RESUMEN DE FLUJO DE SOLICITUDES
+================================================================================
+
+| Escenario          | Dominio                  | Rutas Cargadas       | Middleware Aplicado                                      |
+|--------------------|--------------------------|----------------------|----------------------------------------------------------|
+| Central Admin      | app.misitio.com          | central.php + web.php| web                                                      |
+| Landing Page       | misitio.com              | web.php              | web                                                      |
+| Tenant App         | cliente.misitio.com      | tenant.php           | web + InitializeTenancyByDomain + PreventAccessFromCentralDomains |
+
+================================================================================
+REFERENCIAS CLAVE
+================================================================================
+
+1. Laravel 12 Routing Customization
+   Uso de 'using' para control total del enrutamiento.
+   https://laravel.com/docs/12.x/routing
+
+2. Eliminacion de RouteServiceProvider
+   Nueva arquitectura slim en Laravel 12.
+
+3. Documentacion stancl/tenancy
+   Middleware de inicializacion y prevencion.
+   https://tenancyforlaravel.com/docs/v3/middleware
+
+4. Universal Routes
+   Configuracion del grupo 'universal'.
+
+5. Separacion de Rutas
+   Patron central vs tenant.
+
+================================================================================
+FIN DEL DOCUMENTO
+================================================================================

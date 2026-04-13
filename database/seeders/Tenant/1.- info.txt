@@ -1,0 +1,27 @@
+php artisan tenants:migrate-fresh --tenants=<tenant_id>
+php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\nameSeeder"
+
+
+php artisan tenants:migrate-fresh --tenants=desarrollo
+php artisan tenants:migrate-fresh --tenants=test
+
+php artisan tenants:seed --tenants=desarrollo
+php artisan tenants:seed --tenants=test
+
+php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\SectorSeeder"
+php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\SectorSeeder"
+
+php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\CustomerSeeder"
+php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\MeterSeeder"
+php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\CustomerMeterSeeder"
+
+php artisan tenants:seed --tenants=laHacienda --class="Database\Seeders\Tenant\UserSeeder"
+
+php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\CustomerSeeder"
+php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\MeterSeeder"
+php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\CustomerMeterSeeder"
+
+TRUNCATE `customers`; TRUNCATE `customer_meter`; TRUNCATE `meters`;
+
+
+
