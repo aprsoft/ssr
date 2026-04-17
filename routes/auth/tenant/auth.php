@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Tenant\Auth\ConfirmationController;
 use App\Http\Controllers\Tenant\Auth\LoginController;
 use App\Http\Controllers\Tenant\Auth\NewPasswordController;
@@ -8,7 +10,7 @@ use App\Http\Controllers\Tenant\Auth\RegistrationController;
 use App\Http\Controllers\Tenant\Auth\VerificationController;
 use App\Http\Controllers\Tenant\Settings\PasswordController;
 use App\Http\Controllers\Tenant\Settings\ProfileController;
-use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -47,10 +49,7 @@ Route::middleware('auth')->name('tenant.')->prefix('tenant')->group(function () 
 
     // Confirmación de contraseña
     Route::get('confirm-password', [ConfirmationController::class, 'create'])->name('password.confirm');
-    Route::post('confirm-password', [ConfirmationController::class, 'store'])->name('confirmation.store');
-
-    // Logout - MOVIDO AQUÍ DENTRO DEL GRUPO AUTH
-    Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
+    Route::post('confirm-password', [ConfirmationController::class, 'store'])->name('confirmation.store');   
 
     // Settings
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('settings.profile.edit');
@@ -58,4 +57,7 @@ Route::middleware('auth')->name('tenant.')->prefix('tenant')->group(function () 
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('settings.profile.destroy');
     Route::get('settings/password', [PasswordController::class, 'edit'])->name('settings.password.edit');
     Route::put('settings/password', [PasswordController::class, 'update'])->name('settings.password.update');
+
+    // Logout - MOVIDO AQUÍ DENTRO DEL GRUPO AUTH
+    Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });

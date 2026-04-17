@@ -5,7 +5,7 @@ namespace App\Livewire\Central\Tenant;
 use App\Models\Tenant;
 // use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-// use PowerComponents\LivewirePowerGrid\Button;
+use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 // use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -14,7 +14,8 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
 final class TenantTable extends PowerGridComponent
 {
-    public string $tableName = 'tenantTable';
+    public string  $tableName = 'tenantTable';
+    public ?string $status    = null;
 
     public function setUp(): array
     {
@@ -31,7 +32,11 @@ final class TenantTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Tenant::query();
+        return match ($this->status) {
+            'active' => Tenant::query(),
+            'suspended' => Tenant::onlyTrashed(),
+            default => Tenant::withTrashed(),
+        };
     }
 
  
@@ -74,8 +79,38 @@ final class TenantTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
             Column::make('Link Inquilino', 'link', 'link'),
+            Column::action('Acciones')
             
             
+        ];
+    }
+
+
+    #[\Livewire\Attributes\On('destroy')]
+    public function destroy($rowId): void
+    {
+        $this->js('alert('.$rowId.')');
+    }
+
+    public function actions(Tenant $row): array
+    {
+        return [  
+            
+            Button::add('show')
+                ->icon('default-eye')               
+                ->class('px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center')
+                ->route('central.tenants.show', ['tenant' => $row->id]), 
+
+            Button::add('edit')
+                ->icon('default-pencil')               
+                ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
+                ->route('central.tenants.edit', ['tenant' => $row->id]),   
+
+             Button::add('destroy')
+                ->icon('default-trash')               
+                ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
+                ->dispatch('destroy',['$rowId'=>$row->id]), 
+             
         ];
     }
 }

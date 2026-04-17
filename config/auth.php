@@ -44,6 +44,11 @@ return [
             'driver' => 'session',
             'provider' => 'tenant_users',
         ],
+
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers', // ← apunta aquí
+        ],
     ],
 
     /*
@@ -73,6 +78,12 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Tenant\User::class,
         ],
+
+        // Proveedor de los clientes de cada tenant
+        'customers' => [  
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
+        ],
     ],
 
     /*
@@ -96,6 +107,12 @@ return [
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
+        ],
+        'customers' => [           // ← Reset de password para customers
+        'provider' => 'customers',
+        'table' => 'password_reset_tokens',
+        'expire' => 60,
+        'throttle' => 60,
         ],
     ],
 

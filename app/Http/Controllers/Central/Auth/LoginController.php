@@ -45,6 +45,7 @@ class LoginController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
+        dd('central.logout');
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

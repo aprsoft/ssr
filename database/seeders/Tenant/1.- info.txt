@@ -16,6 +16,9 @@ php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\M
 php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\CustomerMeterSeeder"
 
 php artisan tenants:seed --tenants=laHacienda --class="Database\Seeders\Tenant\UserSeeder"
+php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\UserSeeder"
+php artisan tenants:seed --tenants=desarrollo --class="Database\Seeders\Tenant\CustomerTestSeeder"
+php artisan tenants:seed --tenants=lahacienda --class="Database\Seeders\Tenant\CustomerTestSeeder"
 
 php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\CustomerSeeder"
 php artisan tenants:seed --tenants=test --class="Database\Seeders\Tenant\MeterSeeder"

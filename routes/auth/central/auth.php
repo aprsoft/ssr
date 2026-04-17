@@ -7,6 +7,7 @@ use App\Http\Controllers\Central\Auth\NewPasswordController;
 use App\Http\Controllers\Central\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Central\Auth\RegistrationController;
 use App\Http\Controllers\Central\Auth\VerificationController;
+use App\Http\Controllers\Central\Settings\PasswordController;
 use App\Http\Controllers\Central\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,10 +37,10 @@ Route::middleware('auth')->name('central.')->prefix('central')->group(function (
 
 Route::middleware(['auth'])->name('central.')->prefix('central')->group(function () {
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('settings.profile.edit');
-    Route::put('settings/profile', [Settings\ProfileController::class, 'update'])->name('settings.profile.update');
-    Route::delete('settings/profile', [Settings\ProfileController::class, 'destroy'])->name('settings.profile.destroy');
-    Route::get('settings/password', [Settings\PasswordController::class, 'edit'])->name('settings.password.edit');
-    Route::put('settings/password', [Settings\PasswordController::class, 'update'])->name('settings.password.update');
+    Route::put('settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
+    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('settings.profile.destroy');
+    Route::get('settings/password', [PasswordController::class, 'edit'])->name('settings.password.edit');
+    Route::put('settings/password', [PasswordController::class, 'update'])->name('settings.password.update');
 });
 
 Route::post('central/logout', [LoginController::class, 'destroy'])->name('central.logout');

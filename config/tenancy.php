@@ -17,7 +17,7 @@ return [
      * Solo es relevante si usas el middleware de identificación por dominio o subdominio.
      */
     'central_domains' => [
-        'ssr.test',
+        'ssr.test',        
         // '127.0.0.1',
         // 'localhost',
     ],
@@ -139,7 +139,7 @@ return [
          * deshabilitar la tenancy del helper asset() y usar explícitamente tenant_asset() en los lugares
          * donde quieras usar assets específicos del tenant (imágenes de productos, avatares, etc).
          */
-        'asset_helper_tenancy' => true,
+        'asset_helper_tenancy' => false,
     ],
 
     /**

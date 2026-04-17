@@ -127,6 +127,7 @@
             <!-- app header start -->
             @include('layouts.tenant.app-header')
             <!-- app header end -->
+            @include('partials.alert')
             <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
                 @yield('content')
             </div>

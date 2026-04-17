@@ -18,12 +18,17 @@ class MenuHelper
                  'subItems' => [
                     [
                         'name' => 'Listado',
-                        'path' => route('central.tenants.index', absolute: false),
+                        'path' => route('central.tenants.index', ['status'=>'active'], absolute: false),
                         'pro' => false
                     ],
                     [
                         'name' => 'Crear Inquilino',
                         'path' => route('central.tenants.create', absolute: false),
+                        'pro' => false
+                    ],
+                    [
+                        'name' => 'Suspendidos',
+                        'path' => route('central.tenants.index',['status'=>'suspended'], absolute: false),
                         'pro' => false
                     ]
                 ],

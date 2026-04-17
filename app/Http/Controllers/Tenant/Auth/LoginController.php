@@ -47,13 +47,15 @@ class LoginController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        // dd('tenant.logout');
+        Auth::guard('tenant')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
         return redirect('/tenant/login');
+        
     }
 
     protected function ensureIsNotRateLimited(Request $request): void

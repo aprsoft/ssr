@@ -3,22 +3,12 @@
 @section('content')
     <x-common.page-breadcrumb pageTitle="Crear Inquilino" />
 
-
-
         <div class="bg-white shadow-md rounded-lg w-full max-w-3xl p-6">
 
             <h1 class="text-2xl font-bold text-gray-800 mb-6">
                 Registrar nuevo Tenant
             </h1>
-            @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+           
 
             <form method="POST" action="{{ route('central.tenants.store') }}" class="space-y-4">
                 @csrf

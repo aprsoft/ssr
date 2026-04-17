@@ -9,45 +9,60 @@ use Illuminate\Support\Facades\Route;
         return redirect()->route('central.dashboard');
     })->name('central.home'); 
 
- 
 
-
-
-Route::middleware(['auth'])->name('central.')->prefix('central')->group(function () {
-    
-       /*  Route::get('dashboard', function () {
+    Route::middleware(['auth'])->name('central.')->prefix('central')->group(function () {
         
+        /*  Route::get('dashboard', function () {
             
-            return view('central.dashboard', ['title' => 'Dashboard']);
-        })->name('dashboard'); */
+                
+                return view('central.dashboard', ['title' => 'Dashboard']);
+            })->name('dashboard'); */
 
-        Route::get('dashboard',DashboardController::class)->name('dashboard');
+            Route::get('dashboard',DashboardController::class)->name('dashboard');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Users
-        |--------------------------------------------------------------------------
-        */
-        Route::get('users', [UserController::class, 'index'])->name('users.index');
-        Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('users', [UserController::class, 'store'])->name('users.store');
-        Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
-        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-        /*
-        |--------------------------------------------------------------------------
-        | Users
-        |--------------------------------------------------------------------------
-        */
-        Route::get('tenants', [TenantController::class, 'index'])->name('tenants.index');
-        Route::get('tenants/create', [TenantController::class, 'create'])->name('tenants.create');
-        Route::post('tenants', [TenantController::class, 'store'])->name('tenants.store');
-         /*  Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
-        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy'); */
-});
+            /*
+            |--------------------------------------------------------------------------
+            | Users
+            |--------------------------------------------------------------------------
+            */
+            Route::get('users', [UserController::class, 'index'])->name('users.index');
+            Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+            Route::post('users', [UserController::class, 'store'])->name('users.store');
+            Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
+            Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+            /*
+            |--------------------------------------------------------------------------
+            | Tenants
+            |--------------------------------------------------------------------------
+            */
+             // 1. RUTAS ESTÁTICAS PRIMERO (sin parámetros dinámicos)
+            Route::get('tenants/listado/{status?}', [TenantController::class, 'index'])
+                ->name('tenants.index');
 
-require __DIR__.'/auth/central/auth.php';  
+            Route::get('tenants/create', [TenantController::class, 'create'])
+                ->name('tenants.create');
+
+            // 2. POST para crear (sin parámetros en URL)
+            Route::post('tenants', [TenantController::class, 'store'])
+                ->name('tenants.store');
+
+            // 3. RUTAS CON {tenant} - ESPECÍFICAS ANTES QUE GENERALES
+            Route::get('tenants/{tenant}/edit', [TenantController::class, 'edit'])
+                ->name('tenants.edit');
+
+            Route::patch('tenants/{tenant}/restore', [TenantController::class, 'restore'])
+                ->name('tenants.restore');
+
+            // 4. RUTAS GENERALES CON {tenant} (al final)
+            Route::get('tenants/{tenant}', [TenantController::class, 'show'])
+                ->name('tenants.show');
+
+            Route::delete('tenants/{tenant}/delete', [TenantController::class, 'destroy'])
+                ->name('tenants.destroy');
+
+            });
+
+    require __DIR__.'/auth/central/auth.php';  
 

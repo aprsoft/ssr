@@ -107,7 +107,6 @@
         }
     };
     window.addEventListener('resize', checkMobile);">
-
     {{-- preloader --}}
     <x-common.preloader/>
     {{-- preloader end --}}
@@ -125,7 +124,8 @@
             <!-- app header start -->
             @include('layouts.central.app-header')
             <!-- app header end -->
-            <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            @include('partials.alert')
+            <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6"> 
                 @yield('content')
             </div>
         </div>

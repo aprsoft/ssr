@@ -5,21 +5,21 @@ declare(strict_types=1);
 use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\UserController;
 use Illuminate\Support\Facades\Route;
-// use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-// use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 
 
 Route::middleware([
     'web',
-    // InitializeTenancyByDomain::class,
-    // PreventAccessFromCentralDomains::class,
+    InitializeTenancyByDomain::class,
+    PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
-     Route::get('/', function () {
-     
-            return redirect()->route('tenant.login');
-        })->name('tenant.home');
+    //  Route::get('/', function () {
+    //  dd(8);
+    //         return redirect()->route('tenant.login');
+    //     })->name('tenant.home');
 
 
 

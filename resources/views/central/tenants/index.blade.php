@@ -10,7 +10,9 @@
             </x-ui.alert>
         @endsession
 
-      <livewire:central.tenant.tenant-table/>
+      <livewire:central.tenant.tenant-table
+        :status="$status" 
+      />
 @endsection
 
 
