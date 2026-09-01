@@ -16,12 +16,12 @@ class UserSeeder extends Seeder
         User::factory(5)->create();
 
         User::factory()->create([
-            'rut' => '111111111', 
+            'rut' => '66666666', 
             'name' => 'RODRIGO',  
             'apellido_paterno'=>'ROJAS', 
             'apellido_materno'=> 'RUIZ',  
             'email' => 'admin@aprsoft.cl',
-        ]);
+        ])->assignRole('SuperAdmin');
         
     }
 }

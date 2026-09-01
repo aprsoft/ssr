@@ -21,6 +21,7 @@ class LoginController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        dd('login_central');
         $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
@@ -45,7 +46,7 @@ class LoginController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        dd('central.logout');
+        // dd('central.logout');
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

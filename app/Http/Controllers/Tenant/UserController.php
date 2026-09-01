@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Http\Requests\UpdateUserRequest;
+use Spatie\Permission\Models\Role;
 use App\Models\User;
+
 
 class UserController extends Controller
 {
@@ -19,8 +21,10 @@ class UserController extends Controller
     }
   
     public function edit(User $user)
+    
     {
-        return  view('tenant.user.edit',['title'=>'Editar Usuario']);
+        $roles = Role::all();
+        return  view('tenant.user.edit',['title'=>'Editar Usuario', 'roles'=>$roles]);
     }
 
     /**

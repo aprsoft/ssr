@@ -32,8 +32,43 @@ class MenuHelper
                         'path' => route('tenant.users.create', absolute: false),
                         'pro'  => false
                     ],
+
                 ],
             ],
+             [
+                'icon' => 'access',
+                'name' => 'Roles',
+                'subItems' => [
+                    [                        
+                        'name' => 'listado',
+                        'path' => route('tenant.roles.index', absolute: false),
+                        'pro'  => false
+                    ],
+                    [                        
+                        'name' => 'Crear Roles',
+                        'path' => route('tenant.roles.create', absolute: false),
+                        'pro'  => false
+                    ],
+                    
+                ],
+            ],
+            [
+                'icon' => 'access',
+                'name' => 'Permisos',
+                'subItems' => [
+                    [                        
+                        'name' => 'Listado',
+                        'path' => route('tenant.permissions.index', absolute: false),
+                        'pro'  => false
+                    ],
+                    [                        
+                        'name' => 'Crear Permiso',
+                        'path' => route('tenant.permissions.create', absolute: false),
+                        'pro'  => false
+                    ],
+                    
+                ],
+            ]
         ];
     }
 
@@ -114,6 +149,10 @@ class MenuHelper
                      
             'home' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.5C11.7 3.5 11.4 3.6 11.15 3.8L3.75 10.05C3.59 10.18 3.5 10.38 3.5 10.59V19.25C3.5 19.6642 3.83579 20 4.25 20H9.5C9.77614 20 10 19.7761 10 19.5V14.5C10 14.2239 10.2239 14 10.5 14H13.5C13.7761 14 14 14.2239 14 14.5V19.5C14 19.7761 14.2239 20 14.5 20H19.75C20.1642 20 20.5 19.6642 20.5 19.25V10.59C20.5 10.38 20.41 10.18 20.25 10.05L12.85 3.8C12.6 3.6 12.3 3.5 12 3.5Z" fill="currentColor"></path></svg>',            
 
+            'access' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+  <path fill-rule="evenodd" d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm8 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm-3-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm7 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+</svg>
+'
             ];
 
         return $icons[$iconName] ?? '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/></svg>';

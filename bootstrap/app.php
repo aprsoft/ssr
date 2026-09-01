@@ -19,15 +19,31 @@ return Application::configure(basePath: dirname(__DIR__))
         using: function(){ 
             
             $domains=config('tenancy.central_domains');
+
             foreach ($domains as $domain) {
                 Route::middleware('web')
                 ->domain($domain)
                 ->group(base_path('routes/central.php'));
             }
-            // Route::middleware('web')->group(base_path('routes/central.php'));    
-            Route::middleware('web')->group(base_path('routes/tenant.php'));   
-            Route::middleware('web')->group(base_path('routes/web.php')); 
-              Route::middleware('web')->group(base_path('routes/customer.php'));        
+
+                Route::middleware([
+                    'web',
+                    InitializeTenancyByDomain::class,
+                    PreventAccessFromCentralDomains::class,
+                ])->group(base_path('routes/tenant.php')); 
+
+
+            // Solo dominio central para el sitio web
+                Route::middleware('web')
+                    ->domain(config('tenancy.central_domains')[0])
+                    ->group(base_path('routes/web.php'));
+
+                    
+                Route::middleware([
+                    'web',
+                    InitializeTenancyByDomain::class,
+                    PreventAccessFromCentralDomains::class,
+                ])->group(base_path('routes/customer.php'));     
                 
         }
     )

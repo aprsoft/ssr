@@ -19,32 +19,36 @@ class TenantDatabaseSeeder extends Seeder
     {
 
         $this->call([
-            ChileAdministrativeDivisionsSeeder::class ,
-            CompanySeeder::class,
-            UserSeeder::class,
-            TypedocumentSeeder::class,
-            TaxeSeeder::class,
-            StretcheSeeder::class,            
-            // SectorSeeder::class,
-            CustomerSeeder::class,
-            MeterSeeder::class,
-            CustomerMeterSeeder::class,   
-            ServiceSeeder::class,               
+             RoleSeeder::class,    
+            // ChileAdministrativeDivisionsSeeder::class ,
+            // CompanySeeder::class,
+            UserSeeder::class
+            // TypedocumentSeeder::class,
+            // TaxeSeeder::class,
+            // StretcheSeeder::class,            
+            // // SectorSeeder::class,
+            // CustomerSeeder::class,
+            // MeterSeeder::class,
+            // CustomerMeterSeeder::class,   
+            // ServiceSeeder::class,               
             
             // ChileCitiesSeeder::class,      
             
-            // DocumentSeeder::class,           
+            // DocumentSeeder::class,     
+               
         ]);
         // User::factory(5)->create();
         // Document::factory(100)->create();
 
-        User::factory()->create([
-            'rut' => '66666666', 
-            'name' => 'RO',  
-            'apellido_paterno'=>'ROJAS', 
-            'apellido_materno'=> 'RUIZ',  
-            'email' => 'desarrollo@aprsoft.cl',
-            'movil' => '123456789',
-        ]);
+    
+
+        // User::factory()->create([
+        //     'rut' => '66666666', 
+        //     'name' => 'RO',  
+        //     'apellido_paterno'=>'ROJAS', 
+        //     'apellido_materno'=> 'RUIZ',  
+        //     'email' => 'desarrollo@aprsoft.cl',
+        //     'movil' => '123456789',
+        // ]);
     }
 }
