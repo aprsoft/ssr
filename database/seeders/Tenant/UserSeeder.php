@@ -13,6 +13,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $tenantName = tenant('id');
+
         User::factory(5)->create();
 
         User::factory()->create([
@@ -21,6 +23,14 @@ class UserSeeder extends Seeder
             'apellido_paterno'=>'ROJAS', 
             'apellido_materno'=> 'RUIZ',  
             'email' => 'admin@aprsoft.cl',
+        ])->assignRole('SuperAdmin');
+
+        User::factory()->create([
+            'rut' => '11111111', 
+            'name' => 'admin',  
+            'apellido_paterno'=>'ROJAS', 
+            'apellido_materno'=> 'RUIZ',  
+            'email' => $tenantName.'@aprsoft.cl',
         ])->assignRole('SuperAdmin');
         
     }

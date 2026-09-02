@@ -7,12 +7,12 @@ use App\Models\ErrorLog;
 use App\Models\Central\Tenant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
  use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Throwable;
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Route;
 
 // use Illuminate\Validation\ValidationException;
 // use App\Events\NewTenantUserCreated;
@@ -129,12 +129,12 @@ class TenantController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Tenant $tenant)
     {
         // Buscar tenant por ID
-        $tenant = Tenant::find($id);
+        // $tenant = Tenant::find($id);
 
-        // dd($tenant);
+         dd($tenant);
 
         if (! $tenant) {
             return redirect()->back()->with('error', 'El tenant no existe.');

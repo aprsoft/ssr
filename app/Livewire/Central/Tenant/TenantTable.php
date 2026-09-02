@@ -59,7 +59,7 @@ final class TenantTable extends PowerGridComponent
             ->add('link', function ($tenant) {
                 $scheme = env('APP_DEBUG')? 'http' : 'https';
                 $domain = env('APP_DEBUG')? 'ssr.test' : 'aprsoft.cl';
-                $url = $scheme . '://' . $tenant->id . '.' . $domain;
+                $url = $scheme . '://' . $tenant->id . '.' . $domain.'/tenant/login';
 
                 return sprintf(
                     '<a target="_blank"
@@ -87,10 +87,10 @@ final class TenantTable extends PowerGridComponent
 
 
     #[\Livewire\Attributes\On('destroy')]
-    public function destroy($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
+    // public function destroy($rowId): void
+    // {
+    //     $this->js('alert('.$rowId.')');
+    // }
 
     public function actions(Tenant $row): array
     {
@@ -109,7 +109,7 @@ final class TenantTable extends PowerGridComponent
              Button::add('destroy')
                 ->icon('default-trash')               
                 ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
-                ->dispatch('destroy',['$rowId'=>$row->id]), 
+                ->route('central.tenants.destroy', ['tenant' => $row->id]),   
              
         ];
     }
