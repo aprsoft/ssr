@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Tenant;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class CustomerFactory extends Factory
+class UserFactory extends Factory
 {
     /**
      * The current password being used by the factory.
@@ -37,20 +37,12 @@ class CustomerFactory extends Factory
 
     // Genera un RUN/RUT concatenado (EJ: 123456789)
  
-    // private function generateRut(): string
-    // {
-    //     $number = fake()->numberBetween(1000000, 25000000); // rango real RUT
-    //     $dv = $this->computeDv($number);
-
-    //     return $number . $dv; // sin puntos ni guion
-    // }
-
     private function generateRut(): string
     {
         $number = fake()->numberBetween(1000000, 25000000); // rango real RUT
         $dv = $this->computeDv($number);
 
-        return $number .'-'. $dv; // sin puntos ni guion
+        return $number . $dv; // sin puntos ni guion
     }
 
     /**

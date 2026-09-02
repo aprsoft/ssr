@@ -16,12 +16,13 @@ class LoginController extends Controller
 {
     public function create(): View
     {
-        return view('pages.central.auth.signin',['title'=>'Central']);
+        return view('pages.central.auth.signin', [
+            'title' => 'Central',
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        dd('login_central');
         $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
@@ -29,7 +30,10 @@ class LoginController extends Controller
 
         $this->ensureIsNotRateLimited($request);
 
-        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (! Auth::guard('web')->attempt(
+            $request->only('email', 'password'),
+            $request->boolean('remember')
+        )) {
             RateLimiter::hit($this->throttleKey($request));
 
             throw ValidationException::withMessages([
@@ -41,16 +45,16 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('central.dashboard', absolute: false));
+        return redirect()->intended(
+            route('central.dashboard', absolute: false)
+        );
     }
 
     public function destroy(Request $request): RedirectResponse
     {
-        // dd('central.logout');
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/central/login');
@@ -76,7 +80,8 @@ class LoginController extends Controller
 
     public function throttleKey(Request $request): string
     {
-        return Str::transliterate(Str::lower($request->string('email')).'|'.$request->ip());
+        return Str::transliterate(
+            Str::lower($request->string('email')).'|'.$request->ip()
+        );
     }
 }
-

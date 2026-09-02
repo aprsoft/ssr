@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Central\Tenant;
 
-use App\Models\Tenant;
+use App\Models\Central\Tenant;
 // use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;

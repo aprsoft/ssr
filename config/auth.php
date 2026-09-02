@@ -36,7 +36,7 @@ return [
         // Guard del dominio central (por defecto)
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'central_users',
         ],
 
         // Guard para autenticar a los usuarios de los tenants
@@ -68,9 +68,9 @@ return [
     'providers' => [
 
         // Proveedor del dominio central (viene por defecto)
-        'users' => [
+        'central_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Central\User::class,
         ],
 
         // Proveedor de los usuarios de cada tenant
@@ -102,18 +102,31 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+
+        'central_users' => [
+            'provider' => 'central_users',
+            'table' => env(
+                'AUTH_PASSWORD_RESET_TOKEN_TABLE',
+                'password_reset_tokens'
+            ),
             'expire' => 60,
             'throttle' => 60,
         ],
-        'customers' => [           // ← Reset de password para customers
-        'provider' => 'customers',
-        'table' => 'password_reset_tokens',
-        'expire' => 60,
-        'throttle' => 60,
+
+        'tenant_users' => [
+            'provider' => 'tenant_users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
         ],
+
+        'customers' => [
+            'provider' => 'customers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
     ],
 
     /*

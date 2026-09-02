@@ -15,10 +15,17 @@ use Illuminate\View\View;
 class LoginController extends Controller
 {
     public function create(): View
-    {   
-        $tenantName = ucwords(strtolower(preg_replace('/([A-Z])/', ' $1', tenant()->id)));
-       
-        return view('pages.tenant.auth.signin',['title'=>$tenantName,'tenantName'=>$tenantName]);
+    {
+        $tenantName = ucwords(
+            strtolower(
+                preg_replace('/([A-Z])/', ' $1', tenant()->id)
+            )
+        );
+
+        return view('pages.tenant.auth.signin', [
+            'title' => $tenantName,
+            'tenantName' => $tenantName,
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -30,7 +37,10 @@ class LoginController extends Controller
 
         $this->ensureIsNotRateLimited($request);
 
-        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (! Auth::guard('tenant')->attempt(
+            $request->only('email', 'password'),
+            $request->boolean('remember')
+        )) {
             RateLimiter::hit($this->throttleKey($request));
 
             throw ValidationException::withMessages([
@@ -42,20 +52,19 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('tenant.dashboard', absolute: false));
+        return redirect()->intended(
+            route('tenant.dashboard', absolute: false)
+        );
     }
 
     public function destroy(Request $request): RedirectResponse
     {
-        // dd('tenant.logout');
         Auth::guard('tenant')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/tenant/login');
-        
     }
 
     protected function ensureIsNotRateLimited(Request $request): void
@@ -78,7 +87,8 @@ class LoginController extends Controller
 
     public function throttleKey(Request $request): string
     {
-        return Str::transliterate(Str::lower($request->string('email')).'|'.$request->ip());
+        return Str::transliterate(
+            Str::lower($request->string('email')).'|'.$request->ip()
+        );
     }
 }
-

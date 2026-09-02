@@ -3,7 +3,7 @@
 namespace App\Livewire\Tenant\User;
 
 use App\Events\Tenant\UserCreated;
-use App\Models\User;
+use App\Models\Tenant\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;

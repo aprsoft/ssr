@@ -2,26 +2,47 @@
 
 namespace Database\Seeders\Tenant;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $role1 = Role::create(['name' => 'SuperAdmin']);
-        $role2 = Role::create(['name' => 'Admin']);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Permission::create(['name' => 'tenant.users.index'])->syncRoles($role1,$role2);
-        Permission::create(['name' => 'tenant.users.create'])->syncRoles($role1,$role2);
-        Permission::create(['name' => 'tenant.users.edit'])->syncRoles($role1);
-        Permission::create(['name' => 'tenant.users.destroy'])->syncRoles($role1);
+        $role1 = Role::create([
+            'name' => 'SuperAdmin',
+            'guard_name' => 'tenant',
+        ]);
 
+        $role2 = Role::create([
+            'name' => 'Admin',
+            'guard_name' => 'tenant',
+        ]);
 
+        Permission::create([
+            'name' => 'tenant.users.index',
+            'guard_name' => 'tenant',
+        ])->syncRoles($role1, $role2);
+
+        Permission::create([
+            'name' => 'tenant.users.create',
+            'guard_name' => 'tenant',
+        ])->syncRoles($role1, $role2);
+
+        Permission::create([
+            'name' => 'tenant.users.edit',
+            'guard_name' => 'tenant',
+        ])->syncRoles($role1);
+
+        Permission::create([
+            'name' => 'tenant.users.destroy',
+            'guard_name' => 'tenant',
+        ])->syncRoles($role1);
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

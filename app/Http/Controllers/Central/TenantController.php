@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Central\Controller;
 use App\Models\ErrorLog;
-use App\Models\Tenant;
+use App\Models\Central\Tenant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +40,7 @@ class TenantController extends Controller
 
     public function edit(Tenant $tenant)
     {
-        dd(44);
+      
         return view('central.tenants.edit');
     }
 
@@ -85,7 +85,7 @@ class TenantController extends Controller
             //         'domain' => $data['id'] . '.' . $centralDomains[0],
             //     ]);
             // });
-    
+   
                 $tenant = Tenant::create(['id' => $data['id']]);
               
                 $tenant->domains()->create([
@@ -130,7 +130,7 @@ class TenantController extends Controller
     }
 
     public function destroy($id)
-    {dd(7);
+    {
         // Buscar tenant por ID
         $tenant = Tenant::find($id);
 

@@ -2,8 +2,7 @@
 
 namespace Database\Seeders\Tenant;
 
-use App\Models\Service;
-use App\Models\User;
+// use App\Models\Tenant\User;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
