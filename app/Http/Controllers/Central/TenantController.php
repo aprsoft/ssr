@@ -135,7 +135,7 @@ class TenantController extends Controller
         $tenant->delete();
 
         return redirect()
-            ->route('central.tenants.list', ['status' => 'active'])
+            ->route('central.tenants.index', ['status' => 'active'])
             ->with('success', 'Tenant suspendido correctamente.');
     }
 
@@ -146,7 +146,7 @@ class TenantController extends Controller
         $tenant->restore();
 
         return redirect()
-            ->route('central.tenants.list', ['status' => 'suspended'])
+            ->route('central.tenants.index', ['status' => 'suspended'])
             ->with('success', 'Tenant restaurado correctamente.');
     }
 
