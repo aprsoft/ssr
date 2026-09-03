@@ -69,7 +69,20 @@ final class TenantTable extends PowerGridComponent
                     e($tenant->id)
                 );
             })
-            ->add('created_at');
+            ->add('created_at')
+            ->add('status', function ($tenant) {
+                if ($tenant->trashed()) {
+                    return '<span class="inline-flex items-center gap-1 text-red-600 font-medium">
+                                <span class="text-lg">✕</span>
+                                Suspendido
+                            </span>';
+                }
+
+                return '<span class="inline-flex items-center gap-1 text-green-600 font-medium">
+                            <span class="text-lg">✓</span>
+                            Activo
+                        </span>';
+            });
     }
 
     public function columns(): array
@@ -79,6 +92,7 @@ final class TenantTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
             Column::make('Link Inquilino', 'link', 'link'),
+            Column::make('Estado', 'status'),
             Column::action('Acciones')
             
             
