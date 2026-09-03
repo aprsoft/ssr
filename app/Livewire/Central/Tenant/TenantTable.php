@@ -174,8 +174,9 @@ final class TenantTable extends PowerGridComponent
 
         if ($row->trashed()) {
             $actions[] = Button::add('restore')
-                ->icon('default-arrow-path')
+                ->icon('default-restore')
                 ->class('px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center')
+                ->confirm('¿Está seguro de restaurar este tenant?')
                 ->dispatch('restore', ['tenantId' => $row->id]);
         } else {
             $actions[] = Button::add('edit')
@@ -184,8 +185,9 @@ final class TenantTable extends PowerGridComponent
                 ->route('central.tenants.edit', ['tenant' => $row->id]);
 
             $actions[] = Button::add('suspend')
-                ->icon('default-trash')
+                ->icon('default-suspend')
                 ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
+                ->confirm('¿Está seguro de suspender este tenant?')
                 ->dispatch('suspend', ['tenantId' => $row->id]);
         }
 

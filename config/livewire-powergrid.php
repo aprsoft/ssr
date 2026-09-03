@@ -25,7 +25,15 @@ return [
         ],
 
         'allowed' => [
-             'cash','pencil','eye','files','chevron','clock','trash'
+            'cash',
+            'pencil',
+            'eye',
+            'files',
+            'chevron',
+            'clock',
+            'trash',
+            'suspend',
+            'restore',
         ],
 
         'attributes' => ['class' => 'w-5 text-red-600'],
