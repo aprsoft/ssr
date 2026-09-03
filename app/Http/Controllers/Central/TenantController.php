@@ -25,6 +25,7 @@ class TenantController extends Controller
     public function index(Request $request): View
     { 
         $status = $request->status;
+         $status='suspended';
         return view('central.tenants.index', compact('status'));
     }  
 
@@ -129,6 +130,26 @@ class TenantController extends Controller
         }
     }
 
+    public function suspend(Tenant $tenant)
+    {
+        $tenant->delete();
+
+        return redirect()
+            ->route('central.tenants.list', ['status' => 'active'])
+            ->with('success', 'Tenant suspendido correctamente.');
+    }
+
+    public function restore(string $id)
+    {
+        $tenant = Tenant::onlyTrashed()->findOrFail($id);
+
+        $tenant->restore();
+
+        return redirect()
+            ->route('central.tenants.list', ['status' => 'suspended'])
+            ->with('success', 'Tenant restaurado correctamente.');
+    }
+
     public function destroy(Tenant $tenant)
     {
         // Buscar tenant por ID
@@ -146,20 +167,5 @@ class TenantController extends Controller
         return redirect()->route('central.dashboard')->with('success', 'Tenant eliminado');
     }
 
-    public function resotore($id)
-    {
-        // Buscar tenant por ID
-        $tenant = Tenant::find($id);
-
-        // dd($tenant);
-
-        if (! $tenant) {
-            return redirect()->back()->with('error', 'El tenant no existe.');
-        }
-
-        // Eliminar tenant, dominios y recursos asociados
-        $tenant->restore();
-
-        return redirect()->route('central.dashboard')->with('success', 'Tenant eliminado');
-    }
+    
 }

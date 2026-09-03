@@ -86,32 +86,96 @@ final class TenantTable extends PowerGridComponent
     }
 
 
-    #[\Livewire\Attributes\On('destroy')]
-    // public function destroy($rowId): void
+    // #[\Livewire\Attributes\On('destroy')]
+    // public function destroy($tenantId): void
     // {
-    //     $this->js('alert('.$rowId.')');
+    //     dd($tenantId);
+    // }
+
+    // #[\Livewire\Attributes\On('suspend')]
+    // public function suspend($tenantId): void
+    // {
+    //     $tenant = Tenant::findOrFail($tenantId);
+
+    //     $tenant->delete();
+
+     
+    // }
+
+    #[\Livewire\Attributes\On('suspend')]
+    public function suspend(string $tenantId): void
+    {
+        $tenant = Tenant::findOrFail($tenantId);
+
+        $tenant->delete();
+
+        $this->dispatch('$refresh');
+    }
+
+    #[\Livewire\Attributes\On('restore')]
+    public function restore(string $tenantId): void
+    {
+        $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
+
+        $tenant->restore();
+
+        $this->dispatch('$refresh');
+    }
+
+    // public function actions(Tenant $row): array
+    // {
+    //     return [  
+            
+    //         Button::add('show')
+    //             ->icon('default-eye')               
+    //             ->class('px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center')
+    //             ->route('central.tenants.show', ['tenant' => $row->id]), 
+
+    //         Button::add('edit')
+    //             ->icon('default-pencil')               
+    //             ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
+    //             ->route('central.tenants.edit', ['tenant' => $row->id]),   
+
+    //         // Button::add('destroy')
+    //         //     ->icon('default-trash')
+    //         //     ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
+    //         //     ->dispatch('destroy', ['tenantId' => $row->id]),
+
+    //         Button::add('suspend')
+    //         ->icon('default-trash')
+    //         ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
+    //         ->dispatch('suspend', ['tenantId' => $row->id]),
+             
+    //     ];
     // }
 
     public function actions(Tenant $row): array
     {
-        return [  
-            
+        $actions = [
             Button::add('show')
-                ->icon('default-eye')               
+                ->icon('default-eye')
                 ->class('px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center')
-                ->route('central.tenants.show', ['tenant' => $row->id]), 
-
-            Button::add('edit')
-                ->icon('default-pencil')               
-                ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
-                ->route('central.tenants.edit', ['tenant' => $row->id]),   
-
-             Button::add('destroy')
-                ->icon('default-trash')               
-                ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
-                ->route('central.tenants.destroy', ['tenant' => $row->id]),   
-             
+                ->route('central.tenants.show', ['tenant' => $row->id]),
         ];
+
+        if ($row->trashed()) {
+            $actions[] = Button::add('restore')
+                ->icon('default-arrow-path')
+                ->class('px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center')
+                ->dispatch('restore', ['tenantId' => $row->id]);
+        } else {
+            $actions[] = Button::add('edit')
+                ->icon('default-pencil')
+                ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
+                ->route('central.tenants.edit', ['tenant' => $row->id]);
+
+            $actions[] = Button::add('suspend')
+                ->icon('default-trash')
+                ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
+                ->dispatch('suspend', ['tenantId' => $row->id]);
+        }
+
+        return $actions;
     }
 }
 

@@ -59,8 +59,18 @@ use Illuminate\Support\Facades\Route;
             Route::get('tenants/{tenant}', [TenantController::class, 'show'])
                 ->name('tenants.show');
 
-            Route::delete('tenants/{tenant}/delete', [TenantController::class, 'destroy'])
-                ->name('tenants.destroy');
+            Route::patch(
+                'tenants/{tenant}/suspend',
+                [TenantController::class, 'suspend']
+            )->name('tenants.suspend');
+
+            Route::patch(
+                'tenants/{tenant}/restore',
+                [TenantController::class, 'restore']
+            )->name('tenants.restore');
+
+            // Route::delete('tenants/{tenant}/delete', [TenantController::class, 'destroy'])
+            //     ->name('tenants.destroy');
 
             });
 

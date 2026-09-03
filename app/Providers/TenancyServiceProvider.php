@@ -43,12 +43,22 @@ class TenancyServiceProvider extends ServiceProvider
             Events\UpdatingTenant::class => [],
             Events\TenantUpdated::class => [],
             Events\DeletingTenant::class => [],
+            // Events\TenantDeleted::class => [
+            //     JobPipeline::make([
+            //         Jobs\DeleteDatabase::class,
+            //     ])->send(function (Events\TenantDeleted $event) {
+            //         return $event->tenant;
+            //     })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+            // ],
+
             Events\TenantDeleted::class => [
-                JobPipeline::make([
-                    Jobs\DeleteDatabase::class,
-                ])->send(function (Events\TenantDeleted $event) {
-                    return $event->tenant;
-                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+                function (Events\TenantDeleted $event): void {
+                    if (! $event->tenant->isForceDeleting()) {
+                        return;
+                    }
+
+                    Jobs\DeleteDatabase::dispatchSync($event->tenant);
+                },
             ],
 
             // Domain events
@@ -112,6 +122,14 @@ class TenancyServiceProvider extends ServiceProvider
                     InitializeTenancyByDomain::class, // or whatever tenancy middleware you use
                 );
         });
+
+        // Livewire::setUpdateRoute(function ($handle) {
+        //     return Route::post('/livewire/update', $handle)
+        //         ->middleware(
+        //             'web',
+        //             'universal',
+        //         );
+        // });
 
         $this->makeTenancyMiddlewareHighestPriority();
     }
