@@ -25,7 +25,7 @@ class TenantController extends Controller
     public function index(Request $request): View
     { 
         $status = $request->status;
-         $status='suspended';
+        
         return view('central.tenants.index', compact('status'));
     }  
 

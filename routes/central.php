@@ -50,10 +50,7 @@ use Illuminate\Support\Facades\Route;
 
             // 3. RUTAS CON {tenant} - ESPECÍFICAS ANTES QUE GENERALES
             Route::get('tenants/{tenant}/edit', [TenantController::class, 'edit'])
-                ->name('tenants.edit');
-
-            Route::patch('tenants/{tenant}/restore', [TenantController::class, 'restore'])
-                ->name('tenants.restore');
+                ->name('tenants.edit');            
 
             // 4. RUTAS GENERALES CON {tenant} (al final)
             Route::get('tenants/{tenant}', [TenantController::class, 'show'])
