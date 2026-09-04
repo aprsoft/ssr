@@ -2,6 +2,7 @@
 namespace Database\Seeders\Central;
 
 use App\Models\Central\User;
+use Database\Seeders\Central\RoleSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,12 +13,23 @@ class CentralDatabaseSeeder extends Seeder
     public function run(): void
     {
        
-        User::factory(5)->create();       
+        User::factory()->create([
+            'rut' => '66666666', 
+            'name' => 'RODRIGO',  
+            'apellido_paterno'=>'ROJAS', 
+            'apellido_materno'=> 'RUIZ',  
+            'email' => 'superadmin@aprsoft.cl',
+        ])->assignRole('SuperAdmin');
 
-        User::factory()->create([          
-            'name' => 'superadmin',              
+        User::factory()->create([
+            'rut' => '11111111', 
+            'name' => 'admin',  
+            'apellido_paterno'=>'ROJAS', 
+            'apellido_materno'=> 'RUIZ',  
             'email' => 'admin@aprsoft.cl',
-        ]);
+        ])->assignRole('SuperAdmin');
+     
+          
         
     }
 }

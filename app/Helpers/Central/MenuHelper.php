@@ -53,6 +53,40 @@ class MenuHelper
                     ],
                 ],
             ],
+             [
+                'icon' => 'access',
+                'name' => 'Roles',
+                'subItems' => [
+                    [                        
+                        'name' => 'listado',
+                        'path' => route('tenant.roles.index', absolute: false),
+                        'pro'  => false
+                    ],
+                    [                        
+                        'name' => 'Crear Roles',
+                        'path' => route('tenant.roles.create', absolute: false),
+                        'pro'  => false
+                    ],
+                    
+                ],
+            ],
+            [
+                'icon' => 'access',
+                'name' => 'Permisos',
+                'subItems' => [
+                    [                        
+                        'name' => 'Listado',
+                        'path' => route('tenant.permissions.index', absolute: false),
+                        'pro'  => false
+                    ],
+                    [                        
+                        'name' => 'Crear Permiso',
+                        'path' => route('tenant.permissions.create', absolute: false),
+                        'pro'  => false
+                    ],
+                    
+                ],
+            ]
         ];
     }
 
@@ -81,7 +115,7 @@ class MenuHelper
                 'path' => route('central.errors.index', absolute: false),
                 'pro' => false
             ],
-];
+        ];
     }
 
     public static function getMenuGroups(): array

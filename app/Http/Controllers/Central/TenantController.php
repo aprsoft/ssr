@@ -84,7 +84,7 @@ class TenantController extends Controller
             ]);
 
             return redirect()
-                ->route('central.dashboard')
+                ->route('central.tenants.index')
                 ->with(
                     'success',
                     "Tenant '{$data['id']}' creado correctamente."

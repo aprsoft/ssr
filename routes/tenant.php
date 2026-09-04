@@ -3,19 +3,20 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\ErrorController;
 use App\Http\Controllers\Tenant\PermissionController;
 use App\Http\Controllers\Tenant\RoleController;
 use App\Http\Controllers\Tenant\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('tenant.landingpage.landing');
-})->name('tenant.landing');
+        Route::get('/', function () {
+            return view('tenant.landingpage.landing');
+        })->name('tenant.landing');
 
-Route::middleware('auth:tenant')
-    ->name('tenant.')
-    ->prefix('tenant')
-    ->group(function () {
+        Route::middleware('auth:tenant')
+            ->name('tenant.')
+            ->prefix('tenant')
+        ->group(function () {
 
         /*
         |--------------------------------------------------------------------------
@@ -52,6 +53,18 @@ Route::middleware('auth:tenant')
 
         Route::delete('users/{user}', [UserController::class, 'destroy'])
             ->name('users.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Error_log
+        |--------------------------------------------------------------------------
+        */
+
+            Route::get('errors', [ErrorController::class, 'index'])->name('errors.index');
+            Route::get('errors/{errorLog}', [ErrorController::class, 'show'])->name('errors.show');
+
+        
+    
 
         /*
         |--------------------------------------------------------------------------

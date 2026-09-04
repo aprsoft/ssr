@@ -35,7 +35,7 @@ class MenuHelper
 
                 ],
             ],
-             [
+            [
                 'icon' => 'access',
                 'name' => 'Roles',
                 'subItems' => [
@@ -77,17 +77,14 @@ class MenuHelper
         return [
             [
                 'icon' => 'support',
-                'name' => 'Soporte',
-                'subItems' => [
-                    [
-                        'name' => 'Errores',
-                        'path' => route('tenant.users.index', absolute: false),
-                        'pro' => false
-                    ],
-                ],
+                'name' => 'Errores',
+                'path' => route('tenant.errors.index', absolute: false),
+                'pro' => false
             ],
         ];
     }
+
+    
 
     public static function getMenuGroups(): array
     {
