@@ -100,19 +100,15 @@
 
         {{-- PowerGrid --}}
         <div
-            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm
-                   dark:border-gray-800 dark:bg-white/[0.03]"
+            x-data
+            x-on:click="
+                setTimeout(() => {
+                    const ids = window.pgBulkActions?.get('permissionTable') ?? [];
+
+                    $wire.updateSelectedPermissions(ids);
+                }, 50);
+            "
         >
-            <div class="mb-5">
-                <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
-                    Permisos disponibles
-                </h3>
-
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Selecciona los permisos que tendrá este rol.
-                </p>
-            </div>
-
             <livewire:central.permission.permission-table />
         </div>
 

@@ -17,7 +17,7 @@ class CreateRole extends Component
 
     public array $selectedPermissions = [];
 
-    #[On('central-permissions-selection-changed')]
+  
     public function updateSelectedPermissions(array $ids): void
     {
         $this->permissionIds = collect($ids)

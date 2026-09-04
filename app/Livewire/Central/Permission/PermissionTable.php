@@ -60,25 +60,7 @@ final class PermissionTable extends PowerGridComponent
         ];
     }
 
-    public function updatedCheckboxValues(): void
-    {
-        $this->dispatchSelection();
-    }
-
-    public function selectCheckboxAll(): void
-    {
-        parent::selectCheckboxAll();
-
-        $this->dispatchSelection();
-    }
-
-    private function dispatchSelection(): void
-    {
-        $this->dispatch(
-            'central-permissions-selection-changed',
-            ids: array_values($this->checkboxValues)
-        );
-    }
+  
 
     private function isRoleCreate(): bool
     {
