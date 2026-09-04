@@ -79,6 +79,7 @@ use Illuminate\Support\Facades\Route;
             */
 
              Route::get('errors', [ErrorController::class, 'index'])->name('errors.index');
+             Route::get('errors/{errorLog}', [ErrorController::class, 'show'])->name('errors.show');
 
             });
 
