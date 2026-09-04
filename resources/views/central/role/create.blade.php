@@ -1,15 +1,15 @@
 @extends('layouts.central.app')
 
 @section('content')
-    <x-common.page-breadcrumb pageTitle="Crear Rol" />   
+    <x-common.page-breadcrumb pageTitle="Crear Rol" />
 
     <div class="space-y-6">
-        @session('success')
+        {{-- @session('success')
             <x-ui.alert variant="success">
                 {{ $value }}
             </x-ui.alert>
-        @endsession     
+        @endsession --}}
 
-        <livewire:tenant.role.create-role/> 
+        <livewire:central.role.create-role />
     </div>
 @endsection

@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Seeders\Tenant;
+namespace Database\Seeders\Central;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
-class RoleSeeder extends Seeder
+class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
