@@ -133,42 +133,7 @@ class TenantController extends Controller
         }
     }
 
-    public function suspend(Tenant $tenant)
-    {
-        $tenant->delete();
-
-        return redirect()
-            ->route('central.tenants.index', ['status' => 'active'])
-            ->with('success', 'Tenant suspendido correctamente.');
-    }
-
-    public function restore(string $id)
-    {
-        $tenant = Tenant::onlyTrashed()->findOrFail($id);
-
-        $tenant->restore();
-
-        return redirect()
-            ->route('central.tenants.index', ['status' => 'suspended'])
-            ->with('success', 'Tenant restaurado correctamente.');
-    }
-
-    public function destroy(Tenant $tenant)
-    {
-        // Buscar tenant por ID
-        // $tenant = Tenant::find($id);
-
-         dd($tenant);
-
-        if (! $tenant) {
-            return redirect()->back()->with('error', 'El tenant no existe.');
-        }
-
-        // Eliminar tenant, dominios y recursos asociados
-        $tenant->delete();
-
-        return redirect()->route('central.dashboard')->with('success', 'Tenant eliminado');
-    }
+   
 
     
 }
