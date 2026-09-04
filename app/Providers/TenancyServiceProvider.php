@@ -14,6 +14,7 @@ use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use App\Models\Central\Tenant;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,8 @@ class TenancyServiceProvider extends ServiceProvider
             Events\UpdatingTenant::class => [],
             Events\TenantUpdated::class => [],
             Events\DeletingTenant::class => [],
+            Events\TenantDeleted::class => [],
+            //ORIGINAL
             // Events\TenantDeleted::class => [
             //     JobPipeline::make([
             //         Jobs\DeleteDatabase::class,
@@ -51,15 +54,16 @@ class TenancyServiceProvider extends ServiceProvider
             //     })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
             // ],
 
-            Events\TenantDeleted::class => [
-                function (Events\TenantDeleted $event): void {
-                    if (! $event->tenant->isForceDeleting()) {
-                        return;
-                    }
+            //PROPUESTO INICIALMENTE
+            // Events\TenantDeleted::class => [
+            //     function (Events\TenantDeleted $event): void {
+            //         if (! $event->tenant->isForceDeleting()) {
+            //             return;
+            //         }
 
-                    Jobs\DeleteDatabase::dispatchSync($event->tenant);
-                },
-            ],
+            //         Jobs\DeleteDatabase::dispatchSync($event->tenant);
+            //     },
+            // ],
 
             // Domain events
             Events\CreatingDomain::class => [],
@@ -113,6 +117,10 @@ class TenancyServiceProvider extends ServiceProvider
     {
         $this->bootEvents();
         // $this->mapRoutes();
+
+        Tenant::forceDeleting(function (Tenant $tenant): void {
+            Jobs\DeleteDatabase::dispatchSync($tenant);
+        });
 
         Livewire::setUpdateRoute(function ($handle) {
             return Route::post('/livewire/update', $handle)
