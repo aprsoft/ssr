@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Central\UserController;
 use App\Http\Controllers\Central\DashboardController;
+use App\Http\Controllers\Central\ErrorController;
 use App\Http\Controllers\Central\TenantController;
 use Illuminate\Support\Facades\Route;
 
@@ -70,6 +71,14 @@ use Illuminate\Support\Facades\Route;
 
             // Route::delete('tenants/{tenant}/delete', [TenantController::class, 'destroy'])
             //     ->name('tenants.destroy');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Error_log
+            |--------------------------------------------------------------------------
+            */
+
+             Route::get('users', [ErrorController::class, 'index'])->name('errors.index');
 
             });
 

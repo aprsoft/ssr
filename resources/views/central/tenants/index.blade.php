@@ -6,11 +6,6 @@
 
 <div class="space-y-6">
 
-    @session('success')
-        <x-ui.alert variant="success">
-            {{ $value }}
-        </x-ui.alert>
-    @endsession
 
     <div class="border-b border-gray-200 dark:border-gray-800">
         <nav class="-mb-px flex gap-6" aria-label="Tabs">

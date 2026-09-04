@@ -3,31 +3,27 @@
 namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Central\Controller;
-use App\Models\ErrorLog;
 use App\Models\Central\Tenant;
+use App\Services\Error\ErrorLogger;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
- use Illuminate\Http\Request;
 use Throwable;
-// use Illuminate\Support\Facades\DB;
-// use Illuminate\Support\Facades\Route;
-
-// use Illuminate\Validation\ValidationException;
-// use App\Events\NewTenantUserCreated;
-// use App\Models\CentralErrorLog;
-// use Stancl\Tenancy\Database\Models\Domain;
-// use Illuminate\Http\Request;
 
 class TenantController extends Controller
 {
+    public function __construct(
+        protected ErrorLogger $errorLogger
+    ) {
+    }
+
     public function index(Request $request): View
-    { 
+    {
         $status = $request->status;
-        
+
         return view('central.tenants.index', compact('status'));
-    }  
+    }
 
     public function create()
     {
@@ -55,13 +51,8 @@ class TenantController extends Controller
 
     public function store()
     {
-        $tenant = null;
-
         try {
             $data = request()->all();
-
-            // Solo en desarrollo
-            // logger()->info('Datos recibidos en store(): ', $data);
 
             $validator = Validator::make($data, [
                 'id' => 'required|alpha_dash',
@@ -74,66 +65,52 @@ class TenantController extends Controller
             }
 
             if (Tenant::where('id', $data['id'])->exists()) {
-                return back()->with('error', "El Tenant con ID '{$data['id']}' ya existe.");
+                return back()
+                    ->with('error', "El Tenant con ID '{$data['id']}' ya existe.");
             }
 
             $centralDomains = config('tenancy.central_domains');
-            if (empty($centralDomains) || !is_array($centralDomains)) {
+
+            if (empty($centralDomains) || ! is_array($centralDomains)) {
                 throw new \Exception('No hay dominios centrales configurados.');
             }
 
-            // Ambas operaciones dentro de la misma transacción
-            // DB::transaction(function () use ($data, $centralDomains, &$tenant) {
-            //     $tenant = Tenant::create(['id' => $data['id']]);
-            //     $tenant->domains()->create([
-            //         'domain' => $data['id'] . '.' . $centralDomains[0],
-            //     ]);
-            // });
-   
-                $tenant = Tenant::create(['id' => $data['id']]);
-              
-                $tenant->domains()->create([
-                    'domain' => $data['id'] . '.' . $centralDomains[0],
-                ]);
+            $tenant = Tenant::create([
+                'id' => $data['id'],
+            ]);
+
+            $tenant->domains()->create([
+                'domain' => $data['id'] . '.' . $centralDomains[0],
+            ]);
 
             return redirect()
                 ->route('central.dashboard')
-                ->with('success', "Tenant '{$data['id']}' creado correctamente.");
-
+                ->with(
+                    'success',
+                    "Tenant '{$data['id']}' creado correctamente."
+                );
         } catch (QueryException $e) {
-            // Antes que Throwable para que pueda alcanzarse
-            
-            Log::error('Error SQL al crear tenant', [
-                'sql'      => $e->getSql(),
-                'bindings' => $e->getBindings(),
+            $this->errorLogger->report($e, [
+                'operation' => 'tenant.store',
+                'tenant_id' => $data['id'] ?? null,
+                'error_type' => 'database',
             ]);
 
-            ErrorLog::create([
-                'message'   => $e->getMessage(),
-                'exception' => get_class($e),
-                'file'      => $e->getFile(),
-                'line'      => $e->getLine(),
-            ]);
-
-            return back()->with('error', 'Error de base de datos al crear la BD del tenant. Crear la BD de formal manual (verificar los prefijos por defecto de las nuevas BD,tenant_id y dominio), Tenancy montado en un servidor COMPARTIDO');
-
+            return back()->with(
+                'error',
+                'Error de base de datos al crear la BD del tenant. Crear la BD de forma manual (verificar los prefijos por defecto de las nuevas BD, tenant_id y dominio), Tenancy montado en un servidor COMPARTIDO.'
+            );
         } catch (Throwable $e) {
-                 
-
-            Log::error('Error inesperado al crear tenant: ' . $e->getMessage());
-
-            ErrorLog::create([
-                'message'   => $e->getMessage(),
-                'exception' => get_class($e),
-                'file'      => $e->getFile(),
-                'line'      => $e->getLine(),
+            $this->errorLogger->report($e, [
+                'operation' => 'tenant.store',
+                'tenant_id' => $data['id'] ?? null,
+                'error_type' => 'unexpected',
             ]);
 
-            return back()->with('error', 'Ocurrió un error inesperado.');
+            return back()->with(
+                'error',
+                'Ocurrió un error inesperado.'
+            );
         }
     }
-
-   
-
-    
 }

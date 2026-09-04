@@ -56,6 +56,33 @@ class MenuHelper
         ];
     }
 
+    public static function getSupportItems(): array
+    {
+        return [
+            // [
+            //     'icon' => 'users',
+            //     'name' => 'Usuarios',
+            //     'subItems' => [
+            //         [
+            //             'name' => 'Listado',
+            //             'path' => route('central.users.index', absolute: false),
+            //             'pro' => false
+            //         ],
+            //         [
+            //             'name' => 'Crear Usuario',
+            //             'path' => route('central.users.create', absolute: false),
+            //             'pro' => false
+            //         ],
+            //     ],
+            // ],
+            [
+                'name' => 'Errores',
+                'path' => route('central.errors.index', absolute: false),
+                'pro' => false
+            ],
+];
+    }
+
     public static function getMenuGroups(): array
     {
         
@@ -67,6 +94,10 @@ class MenuHelper
             [
                 'title' => 'Administration',
                 'items' => self::getAdministrationItems()
+            ],
+            [
+                'title' => 'Soporte',
+                'items' => self::getSupportItems()
             ]
         ];
     }
