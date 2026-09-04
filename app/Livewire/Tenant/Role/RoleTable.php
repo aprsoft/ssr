@@ -23,10 +23,10 @@ final class RoleTable extends PowerGridComponent
         $this->showCheckBox();
 
         $route = Route::currentRouteName();
-        dd($route);
+        // dd($route);
 
        if ($route == 'tenant.roles.create') {
-        dd(5);
+        // dd(5);
             $this->showCheckBox();
        } else {
 
