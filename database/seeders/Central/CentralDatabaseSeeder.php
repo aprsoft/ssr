@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders\Central;
 
 use App\Models\Central\User;
@@ -11,24 +12,24 @@ class CentralDatabaseSeeder extends Seeder
 
     public function run(): void
     {
-       
+        $this->call([
+            RolePermissionSeeder::class,
+        ]);
+
         User::factory()->create([
-            'rut' => '66666666', 
-            'name' => 'RODRIGO',  
-            'apellido_paterno'=>'ROJAS', 
-            'apellido_materno'=> 'RUIZ',  
+            'rut' => '66666666',
+            'name' => 'RODRIGO',
+            'apellido_paterno' => 'ROJAS',
+            'apellido_materno' => 'RUIZ',
             'email' => 'superadmin@aprsoft.cl',
         ])->assignRole('SuperAdmin');
 
         User::factory()->create([
-            'rut' => '11111111', 
-            'name' => 'admin',  
-            'apellido_paterno'=>'ROJAS', 
-            'apellido_materno'=> 'RUIZ',  
+            'rut' => '11111111',
+            'name' => 'admin',
+            'apellido_paterno' => 'ROJAS',
+            'apellido_materno' => 'RUIZ',
             'email' => 'admin@aprsoft.cl',
-        ])->assignRole('SuperAdmin');
-     
-          
-        
+        ])->assignRole('Admin');
     }
 }
