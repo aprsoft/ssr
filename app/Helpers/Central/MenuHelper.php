@@ -26,11 +26,7 @@ class MenuHelper
                         'path' => route('central.tenants.create', absolute: false),
                         'pro' => false
                     ],
-                    [
-                        'name' => 'Suspendidos',
-                        'path' => route('central.tenants.index',['status'=>'suspended'], absolute: false),
-                        'pro' => false
-                    ]
+                    
                 ],
                
             ],
