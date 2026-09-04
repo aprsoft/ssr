@@ -13,6 +13,6 @@ class ErrorController
         $errorlogs = ErrorLog::all();
 
         // 2. Retornar la vista pasando los datos (ej: resources/views/central/users/index.blade.php)
-        return view('tenant.errors.index', compact('errorlogs'));
+        return view('central.errors.index', compact('errorlogs'));
     }
 }

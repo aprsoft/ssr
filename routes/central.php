@@ -78,7 +78,7 @@ use Illuminate\Support\Facades\Route;
             |--------------------------------------------------------------------------
             */
 
-             Route::get('users', [ErrorController::class, 'index'])->name('errors.index');
+             Route::get('errors', [ErrorController::class, 'index'])->name('errors.index');
 
             });
 

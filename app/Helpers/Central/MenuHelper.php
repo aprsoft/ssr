@@ -76,6 +76,7 @@ class MenuHelper
             //     ],
             // ],
             [
+                'icon' => 'support',
                 'name' => 'Errores',
                 'path' => route('central.errors.index', absolute: false),
                 'pro' => false
