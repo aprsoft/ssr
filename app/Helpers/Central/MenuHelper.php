@@ -59,12 +59,12 @@ class MenuHelper
                 'subItems' => [
                     [                        
                         'name' => 'listado',
-                        'path' => route('tenant.roles.index', absolute: false),
+                        'path' => route('central.roles.index', absolute: false),
                         'pro'  => false
                     ],
                     [                        
                         'name' => 'Crear Roles',
-                        'path' => route('tenant.roles.create', absolute: false),
+                        'path' => route('central.roles.create', absolute: false),
                         'pro'  => false
                     ],
                     
@@ -76,12 +76,12 @@ class MenuHelper
                 'subItems' => [
                     [                        
                         'name' => 'Listado',
-                        'path' => route('tenant.permissions.index', absolute: false),
+                        'path' => route('central.permissions.index', absolute: false),
                         'pro'  => false
                     ],
                     [                        
                         'name' => 'Crear Permiso',
-                        'path' => route('tenant.permissions.create', absolute: false),
+                        'path' => route('central.permissions.create', absolute: false),
                         'pro'  => false
                     ],
                     

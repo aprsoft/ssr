@@ -23,10 +23,10 @@ final class RoleTable extends PowerGridComponent
         $this->showCheckBox();
 
         $route = Route::currentRouteName();
-        dd($route);
+       
 
        if ($route == 'central.roles.create') {
-        dd(5);
+     
             $this->showCheckBox();
        } else {
 
@@ -64,9 +64,6 @@ final class RoleTable extends PowerGridComponent
             Column::make('Id', 'id'),
             Column::make('Rol', 'name')
                 ->sortable(),
-
-          
-
             Column::action('Acciones')
         ];
     }

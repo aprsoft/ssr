@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Requests\UpdateUserRequest;
 use Spatie\Permission\Models\Role;
-use App\Models\User;
+use App\Models\Tenant\User;
 
 
 class UserController extends Controller
@@ -12,19 +12,19 @@ class UserController extends Controller
    
     public function index()
     {
-        return view('tenant.user.index',['title'=>'Usuarios']);
+        return view('tenant.users.index',['title'=>'Usuarios']);
     }
 
     public function create()
     {
-        return view('tenant.user.create',['title'=>'Crear Usuario']);
+        return view('tenant.users.create',['title'=>'Crear Usuario']);
     }
   
     public function edit(User $user)
     
     {
         $roles = Role::all();
-        return  view('tenant.user.edit',['title'=>'Editar Usuario', 'roles'=>$roles]);
+        return  view('tenant.users.edit',['title'=>'Editar Usuario', 'roles'=>$roles]);
     }
 
     /**
@@ -34,6 +34,6 @@ class UserController extends Controller
     {
         $user->update($request->validated());
 
-        return redirect()->route('tenant.user.index')->with('success', 'User updated successfully');
+        return redirect()->route('tenant.users.index')->with('success', 'User updated successfully');
     }
 }

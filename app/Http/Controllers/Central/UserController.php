@@ -10,17 +10,17 @@ class UserController extends Controller
    
     public function index()
     {
-        return view('central.user.index',['title'=>'Usuarios']);
+        return view('central.users.index',['title'=>'Usuarios']);
     }
 
     public function create()
     {
-        return view('central.user.create',['title'=>'Crear Usuario']);
+        return view('central.users.create',['title'=>'Crear Usuario']);
     }
   
     public function edit(User $user)
     {
-        return  view('central.user.edit',['title'=>'Editar Usuario']);
+        return  view('central.users.edit',['title'=>'Editar Usuario']);
     }
 
     /**
@@ -30,6 +30,6 @@ class UserController extends Controller
     {
         $user->update($request->validated());
 
-        return redirect()->route('user.index')->with('success', 'User updated successfully');
+        return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 }
