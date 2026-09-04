@@ -1,4 +1,4 @@
-@extends('layouts.tenant.app')
+@extends('layouts.central.app')
 
 @section('content')
     <x-common.page-breadcrumb pageTitle="Roles" />

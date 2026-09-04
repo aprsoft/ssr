@@ -24,23 +24,23 @@ class RoleSeeder extends Seeder
         ]);
 
         Permission::create([
-            'name' => 'tenant.users.index',
-            'guard_name' => 'tenant',
+            'name' => 'central.users.index',
+            'guard_name' => 'central',
         ])->syncRoles($role1, $role2);
 
         Permission::create([
-            'name' => 'tenant.users.create',
-            'guard_name' => 'tenant',
+            'name' => 'central.users.create',
+            'guard_name' => 'central',
         ])->syncRoles($role1, $role2);
 
         Permission::create([
-            'name' => 'tenant.users.edit',
-            'guard_name' => 'tenant',
+            'name' => 'central.users.edit',
+            'guard_name' => 'central',
         ])->syncRoles($role1);
 
         Permission::create([
-            'name' => 'tenant.users.destroy',
-            'guard_name' => 'tenant',
+            'name' => 'central.users.destroy',
+            'guard_name' => 'central',
         ])->syncRoles($role1);
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();

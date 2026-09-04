@@ -69,6 +69,7 @@ final class PermissionTable extends PowerGridComponent
                 Column::make('Permisos', 'name')
                     ->sortable()
                     ->searchable(),
+                  Column::action('Action')
 
             
             ];
