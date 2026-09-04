@@ -12,4 +12,14 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 {
     use HasDatabase, HasDomains;
     use SoftDeletes;
+
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ];
+    }
 }

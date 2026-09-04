@@ -36,13 +36,16 @@ class TenantController extends Controller
 
     public function show(Tenant $tenant)
     {
-        return view('central.tenants.show');
+        $tenant->load('domains');
+
+        return view('central.tenants.show', compact('tenant'));
     }
 
     public function edit(Tenant $tenant)
     {
-      
-        return view('central.tenants.edit');
+        $tenant->load('domains');
+
+        return view('central.tenants.edit', compact('tenant'));
     }
 
     public function update(Tenant $tenant)

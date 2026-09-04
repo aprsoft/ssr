@@ -136,33 +136,6 @@ final class TenantTable extends PowerGridComponent
         $this->dispatch('$refresh');
     }
 
-    // public function actions(Tenant $row): array
-    // {
-    //     return [  
-            
-    //         Button::add('show')
-    //             ->icon('default-eye')               
-    //             ->class('px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center')
-    //             ->route('central.tenants.show', ['tenant' => $row->id]), 
-
-    //         Button::add('edit')
-    //             ->icon('default-pencil')               
-    //             ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
-    //             ->route('central.tenants.edit', ['tenant' => $row->id]),   
-
-    //         // Button::add('destroy')
-    //         //     ->icon('default-trash')
-    //         //     ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
-    //         //     ->dispatch('destroy', ['tenantId' => $row->id]),
-
-    //         Button::add('suspend')
-    //         ->icon('default-trash')
-    //         ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
-    //         ->dispatch('suspend', ['tenantId' => $row->id]),
-             
-    //     ];
-    // }
-
     public function actions(Tenant $row): array
     {
         $actions = [
