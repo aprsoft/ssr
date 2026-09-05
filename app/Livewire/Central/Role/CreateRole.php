@@ -4,7 +4,6 @@ namespace App\Livewire\Central\Role;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -15,20 +14,6 @@ class CreateRole extends Component
 
     public array $permissionIds = [];
 
-    public array $selectedPermissions = [];
-
-  
-    public function updateSelectedPermissions(array $ids): void
-    {
-        $this->permissionIds = collect($ids)
-            ->map(fn ($id) => (int) $id)
-            ->unique()
-            ->values()
-            ->all();
-
-        $this->refreshSelectedPermissions();
-    }
-
     public function save()
     {
         $validated = $this->validate([
@@ -36,8 +21,12 @@ class CreateRole extends Component
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(config('permission.table_names.roles'), 'name')
-                    ->where(fn ($query) => $query->where('guard_name', 'web')),
+                Rule::unique(
+                    config('permission.table_names.roles'),
+                    'name'
+                )->where(
+                    fn ($query) => $query->where('guard_name', 'web')
+                ),
             ],
 
             'permissionIds' => [
@@ -84,22 +73,26 @@ class CreateRole extends Component
         return redirect()->route('central.roles.index');
     }
 
-    private function refreshSelectedPermissions(): void
-    {
-        $this->selectedPermissions = Permission::query()
-            ->where('guard_name', 'web')
-            ->whereIn('id', $this->permissionIds)
-            ->orderBy('name')
-            ->get(['id', 'name'])
-            ->map(fn (Permission $permission) => [
-                'id' => $permission->id,
-                'name' => $permission->name,
-            ])
-            ->all();
-    }
-
     public function render()
     {
-        return view('livewire.central.role.create-role');
+        $permissions = Permission::query()
+            ->where('guard_name', 'web')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $selectedPermissions = $permissions
+            ->filter(
+                fn (Permission $permission) => in_array(
+                    (int) $permission->id,
+                    $this->permissionIds,
+                    true
+                )
+            )
+            ->values();
+
+        return view('livewire.central.role.create-role', [
+            'permissions' => $permissions,
+            'selectedPermissions' => $selectedPermissions,
+        ]);
     }
 }

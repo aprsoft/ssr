@@ -15,7 +15,7 @@ final class PermissionTable extends PowerGridComponent
     public string $tableName = 'permissionTable';
 
     public function setUp(): array
-    {
+    { 
         if ($this->isRoleForm()) {
             $this->showCheckBox();
         }
@@ -72,3 +72,5 @@ final class PermissionTable extends PowerGridComponent
         );
     }
 }
+
+

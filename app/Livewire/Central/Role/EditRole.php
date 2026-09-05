@@ -16,8 +16,6 @@ class EditRole extends Component
 
     public array $permissionIds = [];
 
-    public array $selectedPermissions = [];
-
     public function mount(int $roleId): void
     {
         $role = Role::query()
@@ -36,19 +34,6 @@ class EditRole extends Component
             ->map(fn ($id) => (int) $id)
             ->values()
             ->all();
-
-        $this->refreshSelectedPermissions();
-    }
-
-    public function updateSelectedPermissions(array $ids): void
-    {
-        $this->permissionIds = collect($ids)
-            ->map(fn ($id) => (int) $id)
-            ->unique()
-            ->values()
-            ->all();
-
-        $this->refreshSelectedPermissions();
     }
 
     public function update()
@@ -116,22 +101,26 @@ class EditRole extends Component
         return redirect()->route('central.roles.index');
     }
 
-    private function refreshSelectedPermissions(): void
-    {
-        $this->selectedPermissions = Permission::query()
-            ->where('guard_name', 'web')
-            ->whereIn('id', $this->permissionIds)
-            ->orderBy('name')
-            ->get(['id', 'name'])
-            ->map(fn (Permission $permission) => [
-                'id' => $permission->id,
-                'name' => $permission->name,
-            ])
-            ->all();
-    }
-
     public function render()
     {
-        return view('livewire.central.role.edit-role');
+        $permissions = Permission::query()
+            ->where('guard_name', 'web')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $selectedPermissions = $permissions
+            ->filter(
+                fn (Permission $permission) => in_array(
+                    (int) $permission->id,
+                    $this->permissionIds,
+                    true
+                )
+            )
+            ->values();
+
+        return view('livewire.central.role.edit-role', [
+            'permissions' => $permissions,
+            'selectedPermissions' => $selectedPermissions,
+        ]);
     }
 }
