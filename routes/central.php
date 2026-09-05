@@ -95,6 +95,11 @@ use Illuminate\Support\Facades\Route;
         Route::get('roles/create', [RoleController::class, 'create'])
             ->name('roles.create');
 
+        Route::get('roles/{role}', [RoleController::class, 'show'])
+            ->name('roles.show');
+
+        
+
         /*
         |--------------------------------------------------------------------------
         | Permissions

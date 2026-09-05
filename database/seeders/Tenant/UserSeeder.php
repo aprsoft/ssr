@@ -13,9 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenantName = tenant('id');
-
-        User::factory(5)->create();
+        $tenantName = tenant('id');       
 
         User::factory()->create([
             'rut' => '66666666', 

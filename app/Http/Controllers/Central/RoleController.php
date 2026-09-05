@@ -30,12 +30,21 @@ class RoleController
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $role = \Spatie\Permission\Models\Role::query()
+            ->where('guard_name', 'web')
+            ->with([
+                'permissions' => fn ($query) => $query
+                    ->where('guard_name', 'web')
+                    ->orderBy('name'),
+            ])
+            ->findOrFail($id);
+
+        return view('central.role.show', [
+            'title' => 'Ver Rol',
+            'role' => $role,
+        ]);
     }
 
     /**
