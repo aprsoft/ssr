@@ -97,6 +97,12 @@ use Illuminate\Support\Facades\Route;
 
         Route::get('roles/{role}', [RoleController::class, 'show'])
             ->name('roles.show');
+        
+        Route::get('roles/{role}', [RoleController::class, 'edit'])
+            ->name('roles.edit');
+        
+        Route::get('roles/{role}', [RoleController::class, 'update'])
+            ->name('roles.update');
 
         
 

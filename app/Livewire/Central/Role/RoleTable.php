@@ -84,24 +84,20 @@ final class RoleTable extends PowerGridComponent
     {
         return [
             Button::add('show')
-                ->slot('Ver')
-                ->id()
+                ->icon('default-eye')
                 ->class(
-                    'pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 ' .
-                    'dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 ' .
-                    'dark:text-pg-primary-300 dark:bg-pg-primary-700'
+                    'px-2 py-1 bg-green-600 text-white rounded ' .
+                    'hover:bg-green-700 flex items-center justify-center'
                 )
                 ->route('central.roles.show', ['role' => $row->id]),
 
             Button::add('edit')
-                ->slot('Editar')
-                ->id()
+                ->icon('default-pencil')
                 ->class(
-                    'pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 ' .
-                    'dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 ' .
-                    'dark:text-pg-primary-300 dark:bg-pg-primary-700'
+                    'px-2 py-1 bg-gray-600 text-white rounded ' .
+                    'hover:bg-gray-700 flex items-center justify-center'
                 )
-                ->dispatch('edit', ['rowId' => $row->id]),
+                ->route('central.roles.edit', ['role' => $row->id])
         ];
     }
 
