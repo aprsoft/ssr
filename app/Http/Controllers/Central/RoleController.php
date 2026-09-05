@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Central;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class RoleController
 {
@@ -11,7 +12,9 @@ class RoleController
      */
     public function index()
     {
-       return view('central.role.index',['title'=>'Roles']);
+        return view('central.role.index', [
+            'title' => 'Roles',
+        ]);
     }
 
     /**
@@ -19,7 +22,9 @@ class RoleController
      */
     public function create()
     {
-       return view('central.role.create',['title'=>'Crear Rol']);
+        return view('central.role.create', [
+            'title' => 'Crear Rol',
+        ]);
     }
 
     /**
@@ -30,9 +35,12 @@ class RoleController
         //
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(string $id)
     {
-        $role = \Spatie\Permission\Models\Role::query()
+        $role = Role::query()
             ->where('guard_name', 'web')
             ->with([
                 'permissions' => fn ($query) => $query
@@ -52,11 +60,20 @@ class RoleController
      */
     public function edit(string $id)
     {
-        //
+        $role = Role::query()
+            ->where('guard_name', 'web')
+            ->findOrFail($id);
+
+        return view('central.role.edit', [
+            'title' => 'Editar Rol',
+            'role' => $role,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * La actualización real se realiza en el componente Livewire EditRole.
      */
     public function update(Request $request, string $id)
     {

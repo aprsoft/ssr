@@ -16,7 +16,7 @@ final class PermissionTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        if ($this->isRoleCreate()) {
+        if ($this->isRoleForm()) {
             $this->showCheckBox();
         }
 
@@ -60,10 +60,15 @@ final class PermissionTable extends PowerGridComponent
         ];
     }
 
-  
-
-    private function isRoleCreate(): bool
+    private function isRoleForm(): bool
     {
-        return Route::currentRouteName() === 'central.roles.create';
+        return in_array(
+            Route::currentRouteName(),
+            [
+                'central.roles.create',
+                'central.roles.edit',
+            ],
+            true
+        );
     }
 }
