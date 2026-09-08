@@ -33,7 +33,7 @@ class EditRole extends Component
             ->pluck('id')
             ->map(fn ($id) => (int) $id)
             ->values()
-            ->all();
+            ->all();         
     }
 
     public function update()
