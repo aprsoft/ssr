@@ -156,7 +156,7 @@
                                     <input
                                         type="checkbox"
                                         value="{{ $permission->id }}"
-                                        wire:model.live.number="permissionIds"
+                                        wire:model.number.live="permissionIds"
                                         class="h-4 w-4 rounded border-gray-300
                                                text-blue-600 focus:ring-blue-500
                                                dark:border-gray-600 dark:bg-gray-800"
