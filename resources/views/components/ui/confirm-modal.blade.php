@@ -15,7 +15,7 @@
         payload: {
             id: null,
             name: '',
-            event: ''
+           
         },
 
         confirmEvent: @js($confirmEvent),
