@@ -12,6 +12,36 @@ class CreatePermission extends Component
 
     public function save()
     {
+        $permissionName = $this->createPermission();
+
+        session()->flash(
+            'success',
+            sprintf(
+                'El permiso "%s" fue creado correctamente.',
+                $permissionName
+            )
+        );
+
+        return redirect()->route('central.permissions.index');
+    }
+
+    public function saveAndCreateAnother()
+    {
+        $permissionName = $this->createPermission();
+
+        session()->flash(
+            'success',
+            sprintf(
+                'El permiso "%s" fue creado correctamente. Puedes crear otro permiso.',
+                $permissionName
+            )
+        );
+
+        return redirect()->route('central.permissions.create');
+    }
+
+    private function createPermission(): string
+    {
         $this->permission = trim($this->permission);
 
         $validated = $this->validate([
@@ -31,21 +61,18 @@ class CreatePermission extends Component
             'permission.unique' => 'Ya existe un permiso con ese nombre.',
         ]);
 
-        Permission::create([
+        $permission = Permission::create([
             'name' => $validated['permission'],
             'guard_name' => 'web',
         ]);
 
-        session()->flash(
-            'success',
-            'Permiso creado correctamente.'
-        );
-
-        return redirect()->route('central.permissions.index');
+        return $permission->name;
     }
 
     public function render()
     {
-        return view('livewire.central.permission.create-permission');
+        return view(
+            'livewire.central.permission.create-permission'
+        );
     }
 }

@@ -43,10 +43,14 @@
             </div>
         </div>
 
-        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-
+        <div
+            class="flex flex-col-reverse gap-3
+                   sm:flex-row sm:justify-end"
+        >
+            {{-- Cancelar --}}
             <a
                 href="{{ route('central.permissions.index') }}"
+                wire:loading.class="pointer-events-none opacity-50"
                 class="inline-flex items-center justify-center rounded-lg
                        border border-gray-300 bg-white px-4 py-2.5
                        text-sm font-medium text-gray-700 shadow-sm
@@ -57,25 +61,61 @@
                 Cancelar
             </a>
 
+            {{-- Guardar y crear otro --}}
             <button
-                type="submit"
+                type="button"
+                wire:click="saveAndCreateAnother"
                 wire:loading.attr="disabled"
-                wire:target="save"
-                class="inline-flex items-center justify-center rounded-lg
-                       bg-blue-600 px-4 py-2.5
-                       text-sm font-medium text-white shadow-sm
-                       transition hover:bg-blue-700
-                       disabled:cursor-not-allowed disabled:opacity-60"
+                class="inline-flex min-w-44 items-center justify-center
+                       rounded-lg border border-blue-600 bg-white
+                       px-4 py-2.5 text-sm font-medium text-blue-600
+                       shadow-sm transition
+                       hover:bg-blue-50
+                       disabled:cursor-not-allowed
+                       disabled:opacity-60
+                       dark:bg-gray-900
+                       dark:hover:bg-blue-500/10"
             >
-                <span wire:loading.remove wire:target="save">
-                    Guardar permiso
+                <span
+                    wire:loading.remove
+                    wire:target="saveAndCreateAnother"
+                >
+                    Guardar Permiso y crear otro
                 </span>
 
-                <span wire:loading wire:target="save">
+                <span
+                    wire:loading
+                    wire:target="saveAndCreateAnother"
+                >
                     Guardando...
                 </span>
             </button>
 
+            {{-- Guardar --}}
+            <button
+                type="submit"
+                wire:loading.attr="disabled"
+                class="inline-flex min-w-36 items-center justify-center
+                       rounded-lg bg-blue-600 px-4 py-2.5
+                       text-sm font-medium text-white shadow-sm
+                       transition hover:bg-blue-700
+                       disabled:cursor-not-allowed
+                       disabled:opacity-60"
+            >
+                <span
+                    wire:loading.remove
+                    wire:target="save"
+                >
+                    Guardar permiso
+                </span>
+
+                <span
+                    wire:loading
+                    wire:target="save"
+                >
+                    Guardando...
+                </span>
+            </button>
         </div>
 
     </form>
