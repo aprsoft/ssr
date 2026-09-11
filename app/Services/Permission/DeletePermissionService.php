@@ -10,37 +10,59 @@ class DeletePermissionService
 {
     public function delete(int $id): string
     {
-        $permission = Permission::query()
-            ->where('guard_name', 'web')
-            ->findOrFail($id);
+        return DB::transaction(function () use ($id): string {
+            $permission = Permission::query()
+                ->where('guard_name', 'web')
+                ->lockForUpdate()
+                ->find($id);
 
-        $rolesCount = $permission->roles()->count();
+            if (! $permission) {
+                throw new DomainException(
+                    'El permiso no existe o ya no está disponible.'
+                );
+            }
 
-        $permissionPivotKey = config(
-            'permission.column_names.permission_pivot_key'
-        ) ?? 'permission_id';
+            $rolesCount = $permission->roles()->count();
 
-        $directAssignmentsCount = DB::table(
-            config('permission.table_names.model_has_permissions')
-        )
-            ->where($permissionPivotKey, $permission->id)
-            ->count();
+            $permissionPivotKey = config(
+                'permission.column_names.permission_pivot_key'
+            ) ?? 'permission_id';
 
-        if ($rolesCount > 0 || $directAssignmentsCount > 0) {
-            throw new DomainException(
-                $this->buildInUseMessage(
-                    $permission->name,
-                    $rolesCount,
-                    $directAssignmentsCount
-                )
+            $modelHasPermissionsTable = config(
+                'permission.table_names.model_has_permissions'
             );
-        }
 
-        $permissionName = $permission->name;
+            if (
+                ! is_string($modelHasPermissionsTable) ||
+                $modelHasPermissionsTable === ''
+            ) {
+                throw new \RuntimeException(
+                    'La tabla model_has_permissions no está configurada correctamente.'
+                );
+            }
 
-        $permission->delete();
+            $directAssignmentsCount = DB::table(
+                $modelHasPermissionsTable
+            )
+                ->where($permissionPivotKey, $permission->id)
+                ->count();
 
-        return $permissionName;
+            if ($rolesCount > 0 || $directAssignmentsCount > 0) {
+                throw new DomainException(
+                    $this->buildInUseMessage(
+                        $permission->name,
+                        $rolesCount,
+                        $directAssignmentsCount
+                    )
+                );
+            }
+
+            $permissionName = $permission->name;
+
+            $permission->delete();
+
+            return $permissionName;
+        });
     }
 
     private function buildInUseMessage(

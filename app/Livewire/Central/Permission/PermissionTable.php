@@ -3,7 +3,6 @@
 namespace App\Livewire\Central\Permission;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
@@ -13,7 +12,10 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use Spatie\Permission\Models\Permission;
 use App\Services\Permission\DeletePermissionService;
+use App\Services\Error\ErrorLogger;
 use DomainException;
+use Illuminate\Database\QueryException;
+use Throwable;
 
 final class PermissionTable extends PowerGridComponent
 {
@@ -74,6 +76,7 @@ final class PermissionTable extends PowerGridComponent
     #[On('permission-destroy-confirmed')]
     public function destroy(
         DeletePermissionService $deletePermission,
+        ErrorLogger $errorLogger,
         int $id
     ): void {
         try {
@@ -87,6 +90,49 @@ final class PermissionTable extends PowerGridComponent
                 )
             );
         } catch (DomainException $exception) {
+            /*
+            * Restricción esperada de negocio.
+            *
+            * Ejemplos:
+            * - permiso asociado a roles;
+            * - permiso asignado directamente;
+            * - permiso que ya no existe.
+            *
+            * No se registra en error_logs porque no representa
+            * un fallo del sistema.
+            */
+            session()->flash(
+                'error',
+                $exception->getMessage()
+            );
+        } catch (QueryException $exception) {
+            /*
+            * Error real de base de datos.
+            * Se registra mediante el mecanismo central de SSR.
+            */
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'permission.destroy',
+                    'permission_id' => $id,
+                    'error_type' => 'database',
+                ]
+            );
+
+            session()->flash(
+                'error',
+                'Ocurrió un error de base de datos al eliminar el permiso.'
+            );
+        } catch (DomainException $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'permission.destroy',
+                    'permission_id' => $id,
+                    'error_type' => 'business',
+                ]
+            );
+
             session()->flash(
                 'error',
                 $exception->getMessage()
