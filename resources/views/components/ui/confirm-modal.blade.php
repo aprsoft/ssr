@@ -126,10 +126,10 @@
                     type="button"
                     :disabled="payload.id === null"
                     @click="
-                        $dispatch(confirmEvent, { id: payload.id });
+                        Livewire.dispatch(confirmEvent, { id: payload.id });
                         open = false;
                     "
-                    class="inline-flex min-w-28 items-center justify-center
+                                        class="inline-flex min-w-28 items-center justify-center
                            rounded-lg bg-red-600 px-4 py-2.5
                            text-sm font-medium text-white shadow-sm
                            transition hover:bg-red-700
