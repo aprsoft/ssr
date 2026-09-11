@@ -132,7 +132,7 @@
 
     </div>
 
-      {{-- Modal global de confirmación de eliminación --}}
+    {{-- Modal global de confirmación de eliminación --}}
     <x-ui.confirm-modal />
 
 </body>

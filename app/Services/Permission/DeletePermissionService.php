@@ -11,10 +11,15 @@ class DeletePermissionService
     public function delete(int $id): string
     {
         return DB::transaction(function () use ($id): string {
+
+           
+
             $permission = Permission::query()
                 ->where('guard_name', 'web')
                 ->lockForUpdate()
                 ->find($id);
+
+     
 
             if (! $permission) {
                 throw new DomainException(

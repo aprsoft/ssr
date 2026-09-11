@@ -13,8 +13,8 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use Spatie\Permission\Models\Permission;
 use App\Services\Permission\DeletePermissionService;
 use App\Services\Error\ErrorLogger;
-use DomainException;
 use Illuminate\Database\QueryException;
+use DomainException;
 use Throwable;
 
 final class PermissionTable extends PowerGridComponent
@@ -80,7 +80,7 @@ final class PermissionTable extends PowerGridComponent
         int $id
     ): void {
         try {
-            $permissionName = $deletePermission->delete($id);
+            $permissionName = $deletePermission->delete($id);           
 
             session()->flash(
                 'success',
