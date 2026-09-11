@@ -132,15 +132,8 @@
 
     </div>
 
-    <x-ui.confirm-modal
-        open-event="open-confirm-modal"
-        confirm-event="permission-destroy-confirmed"
-        title="Eliminar permiso"
-        message="¿Está seguro de que desea eliminar este permiso?"
-        warning="Esta acción no se puede deshacer."
-        confirm-text="Eliminar"
-        cancel-text="Cancelar"
-    />
+      {{-- Modal global de confirmación de eliminación --}}
+    <x-ui.confirm-modal />
 
 </body>
 

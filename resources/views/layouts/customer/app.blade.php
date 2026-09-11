@@ -136,6 +136,10 @@
 
     </div>
 <x-toast position="toast-top toast-end" />
+
+{{-- Modal global de confirmación de eliminación --}}
+<x-ui.confirm-modal />
+
 </body>
 
 @livewireScriptConfig

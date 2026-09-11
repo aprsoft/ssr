@@ -1,13 +1,3 @@
-@props([
-    'openEvent',
-    'confirmEvent',
-    'title' => 'Confirmar acción',
-    'message' => '¿Está seguro de continuar?',
-    'warning' => null,
-    'confirmText' => 'Confirmar',
-    'cancelText' => 'Cancelar',
-])
-
 <div
     x-data="{
         open: false,
@@ -15,50 +5,69 @@
         payload: {
             id: null,
             name: '',
-           
+            confirmEvent: null,
+            title: 'Confirmar eliminación',
+            message: '¿Está seguro de que desea eliminar este registro?',
+            warning: 'Esta acción no se puede deshacer.',
         },
-
-        confirmEvent: @js($confirmEvent),
 
         show(event) {
             this.payload = {
                 id: event.detail?.id ?? null,
                 name: event.detail?.name ?? '',
+                confirmEvent: event.detail?.confirmEvent ?? null,
+                title: event.detail?.title ?? 'Confirmar eliminación',
+                message: event.detail?.message
+                    ?? '¿Está seguro de que desea eliminar este registro?',
+                warning: event.detail?.warning
+                    ?? 'Esta acción no se puede deshacer.',
             };
 
-            this.open = true;
+            if (
+                this.payload.id === null ||
+                ! this.payload.confirmEvent
+            ) {
+                return;
+            }
 
+            this.open = true;
             document.body.style.overflow = 'hidden';
         },
 
         close() {
             this.open = false;
-
             document.body.style.overflow = '';
 
             this.payload = {
                 id: null,
                 name: '',
+                confirmEvent: null,
+                title: 'Confirmar eliminación',
+                message: '¿Está seguro de que desea eliminar este registro?',
+                warning: 'Esta acción no se puede deshacer.',
             };
         },
 
         confirm() {
-            if (this.payload.id === null) {
+            if (
+                this.payload.id === null ||
+                ! this.payload.confirmEvent
+            ) {
                 return;
             }
 
-            window.dispatchEvent(
-                new CustomEvent(this.confirmEvent, {
-                    detail: {
-                        id: this.payload.id,
-                    },
-                })
+            Livewire.dispatch(
+                this.payload.confirmEvent,
+                {
+                    id: this.payload.id,
+                }
             );
 
             this.close();
         },
     }"
-    x-on:{{ $openEvent }}.window="show($event)"
+
+    x-on:open-confirm-modal.window="show($event)"
     x-on:keydown.escape.window="if (open) close()"
 >
     <div
@@ -67,7 +76,7 @@
         class="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6"
         role="dialog"
         aria-modal="true"
-        aria-label="{{ $title }}"
+        x-bind:aria-label="payload.title"
     >
         {{-- Backdrop --}}
         <div
@@ -125,21 +134,19 @@
 
                 {{-- Título --}}
                 <h3
+                    x-text="payload.title"
                     class="mt-5 text-center text-xl font-semibold
                            text-gray-900 dark:text-white"
-                >
-                    {{ $title }}
-                </h3>
+                ></h3>
 
                 {{-- Mensaje --}}
                 <p
+                    x-text="payload.message"
                     class="mt-2 text-center text-sm leading-6
                            text-gray-500 dark:text-gray-400"
-                >
-                    {{ $message }}
-                </p>
+                ></p>
 
-                {{-- Nombre del registro --}}
+                {{-- Registro --}}
                 <div
                     x-show="payload.name"
                     class="mt-5 rounded-xl border border-gray-200
@@ -154,16 +161,14 @@
                 </div>
 
                 {{-- Advertencia --}}
-                @if ($warning)
-                    <p
-                        class="mt-4 text-center text-sm font-medium
-                               text-red-600 dark:text-red-400"
-                    >
-                        {{ $warning }}
-                    </p>
-                @endif
+                <p
+                    x-show="payload.warning"
+                    x-text="payload.warning"
+                    class="mt-4 text-center text-sm font-medium
+                           text-red-600 dark:text-red-400"
+                ></p>
 
-                {{-- Acciones --}}
+                {{-- Botones --}}
                 <div
                     class="mt-7 flex flex-col-reverse gap-3
                            sm:flex-row sm:justify-center"
@@ -181,13 +186,16 @@
                                dark:border-gray-700 dark:bg-gray-800
                                dark:text-gray-300 dark:hover:bg-gray-700"
                     >
-                        {{ $cancelText }}
+                        Cancelar
                     </button>
 
                     <button
                         type="button"
                         x-on:click="confirm()"
-                        x-bind:disabled="payload.id === null"
+                        x-bind:disabled="
+                            payload.id === null ||
+                            ! payload.confirmEvent
+                        "
                         class="inline-flex min-w-28 items-center justify-center
                                rounded-lg bg-red-600 px-4 py-2.5
                                text-sm font-medium text-white
@@ -199,10 +207,10 @@
                                disabled:opacity-50
                                dark:focus:ring-offset-gray-900"
                     >
-                        {{ $confirmText }}
+                        Eliminar
                     </button>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>

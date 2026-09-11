@@ -172,7 +172,10 @@ final class PermissionTable extends PowerGridComponent
                     [
                         'id' => $row->id,
                         'name' => $row->name,
-                        'event' => 'permission-destroy-confirmed'
+                        'confirmEvent' => 'permission-destroy-confirmed',
+                        'title' => 'Eliminar permiso',
+                        'message' => '¿Está seguro de que desea eliminar este permiso?',
+                        'warning' => 'Esta acción no se puede deshacer.',
                     ]
                 ),
         ];
