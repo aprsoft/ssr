@@ -12,6 +12,8 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use Spatie\Permission\Models\Permission;
+use App\Services\Permission\DeletePermissionService;
+use DomainException;
 
 final class PermissionTable extends PowerGridComponent
 {
@@ -70,64 +72,26 @@ final class PermissionTable extends PowerGridComponent
     }
 
     #[On('permission-destroy-confirmed')]
-    public function destroy(int $id): void
-    {
-        $permission = Permission::query()
-            ->where('guard_name', 'web')
-            ->findOrFail($id);
-
-        $rolesCount = $permission->roles()->count();
-
-        $permissionPivotKey = config(
-            'permission.column_names.permission_pivot_key'
-        ) ?? 'permission_id';
-
-        $directAssignmentsCount = DB::table(
-            config('permission.table_names.model_has_permissions')
-        )
-            ->where($permissionPivotKey, $permission->id)
-            ->count();
-
-        if ($rolesCount > 0 || $directAssignmentsCount > 0) {
-            $associations = [];
-
-            if ($rolesCount > 0) {
-                $associations[] = $rolesCount === 1
-                    ? '1 rol'
-                    : "{$rolesCount} roles";
-            }
-
-            if ($directAssignmentsCount > 0) {
-                $associations[] = $directAssignmentsCount === 1
-                    ? '1 asignación directa'
-                    : "{$directAssignmentsCount} asignaciones directas";
-            }
+    public function destroy(
+        DeletePermissionService $deletePermission,
+        int $id
+    ): void {
+        try {
+            $permissionName = $deletePermission->delete($id);
 
             session()->flash(
-                'error',
+                'success',
                 sprintf(
-                    'No se puede eliminar el permiso "%s" porque está asociado a %s. Elimina primero esas asignaciones.',
-                    $permission->name,
-                    implode(' y ', $associations)
+                    'El permiso "%s" fue eliminado correctamente.',
+                    $permissionName
                 )
             );
-
-            $this->redirectRoute('central.permissions.index');
-
-            return;
+        } catch (DomainException $exception) {
+            session()->flash(
+                'error',
+                $exception->getMessage()
+            );
         }
-
-        $permissionName = $permission->name;
-
-        $permission->delete();
-
-        session()->flash(
-            'success',
-            sprintf(
-                'El permiso "%s" fue eliminado correctamente.',
-                $permissionName
-            )
-        );
 
         $this->redirectRoute('central.permissions.index');
     }
