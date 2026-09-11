@@ -4,6 +4,7 @@ namespace App\Livewire\Central\Permission;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
+use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
@@ -57,6 +58,35 @@ final class PermissionTable extends PowerGridComponent
             Column::make('Permisos', 'name')
                 ->sortable()
                 ->searchable(),
+
+            Column::action('Acciones'),
+        ];
+    }
+
+    public function actions(Permission $row): array
+    {
+        return [
+            Button::add('show')
+                ->icon('default-eye')                
+                ->class(
+                    'px-2 py-1 bg-green-600 text-white rounded ' .
+                    'hover:bg-green-700 flex items-center justify-center'
+                )
+                ->route(
+                    'central.permissions.show',
+                    ['permission' => $row->id]
+                ),
+
+            Button::add('edit')
+                ->icon('default-pencil')
+                ->class(
+                    'px-2 py-1 bg-gray-600 text-white rounded ' .
+                    'hover:bg-gray-700 flex items-center justify-center'
+                )
+                ->route(
+                    'central.permissions.edit',
+                    ['permission' => $row->id]
+                ),
         ];
     }
 

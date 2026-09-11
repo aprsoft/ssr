@@ -119,6 +119,12 @@ use Illuminate\Support\Facades\Route;
         Route::get('permissions/create', [PermissionController::class, 'create'])
             ->name('permissions.create');
 
+        Route::get('permissions/{permission}/edit', [PermissionController::class, 'edit'])
+            ->name('permissions.edit');
+
+        Route::get('permissions/{permission}', [PermissionController::class, 'show'])
+            ->name('permissions.show');
+
              
 
             });
