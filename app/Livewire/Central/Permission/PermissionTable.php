@@ -168,10 +168,11 @@ final class PermissionTable extends PowerGridComponent
                     'hover:bg-red-700 flex items-center justify-center'
                 )
                 ->dispatch(
-                    'open-permission-delete-modal',
+                    'open-confirm-modal',
                     [
                         'id' => $row->id,
                         'name' => $row->name,
+                        'event' => 'permission-destroy-confirmed'
                     ]
                 ),
         ];
