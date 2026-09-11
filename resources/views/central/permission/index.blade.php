@@ -8,12 +8,16 @@
     </div>
 
     <div class="space-y-6">
-        @session('success')
-            <x-ui.alert variant="success">
-                {{ $value }}
-            </x-ui.alert>
-        @endsession     
-
-        <livewire:central.permission.permission-table/> 
+        <livewire:central.permission.permission-table />
     </div>
+
+    <x-ui.confirm-modal
+        open-event="open-permission-delete-modal"
+        confirm-event="permission-destroy-confirmed"
+        title="Eliminar permiso"
+        message="¿Está seguro de que desea eliminar este permiso?"
+        warning="Esta acción no se puede deshacer."
+        confirm-text="Eliminar"
+        cancel-text="Cancelar"
+    />
 @endsection
