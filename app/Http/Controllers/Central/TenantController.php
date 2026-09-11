@@ -6,17 +6,11 @@ use App\Http\Controllers\Central\Controller;
 use App\Models\Central\Tenant;
 use App\Services\Error\ErrorLogger;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Throwable;
+
 
 class TenantController extends Controller
 {
-    public function __construct(
-        protected ErrorLogger $errorLogger
-    ) {
-    }
 
     public function index(Request $request): View
     {
@@ -42,12 +36,7 @@ class TenantController extends Controller
         $tenant->load('domains');
 
         return view('central.tenants.edit', compact('tenant'));
-    }
-
-    public function update(Tenant $tenant)
-    {
-        return view('central.tenants.show');
-    }
+    }  
 
     
 }

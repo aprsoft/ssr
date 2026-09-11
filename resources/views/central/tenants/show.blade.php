@@ -4,21 +4,7 @@
 
     <x-common.page-breadcrumb pageTitle="Detalle del Inquilino" />
 
-    <div class="space-y-6">
-
-        {{-- Mensajes --}}
-        @session('success')
-            <x-ui.alert variant="success">
-                {{ $value }}
-            </x-ui.alert>
-        @endsession
-
-        @session('error')
-            <x-ui.alert variant="error">
-                {{ $value }}
-            </x-ui.alert>
-        @endsession
-
+    <div class="space-y-6"> 
 
         {{-- Información general --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
