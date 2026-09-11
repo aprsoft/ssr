@@ -3,7 +3,7 @@
 // app/Events/UserCreated.php
 namespace App\Events\Central;
 
-use App\Models\User;
+use App\Models\Central\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;

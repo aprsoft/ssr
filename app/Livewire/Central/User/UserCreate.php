@@ -2,93 +2,190 @@
 
 namespace App\Livewire\Central\User;
 
-use App\Events\Tenant\UserCreated;
-use App\Models\User;
+use App\Events\Central\UserCreated;
+use App\Models\Central\User;
+use App\Services\Error\ErrorLogger;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Mary\Traits\Toast;
 use Throwable;
 
 class UserCreate extends Component
 {
-    use Toast;
+    public string $name = '';
 
-    public string $name = '';  
     public string $email = '';
 
     protected function rules(): array
     {
         return [
-            'name'  => ['required'],
-            // 'email' => ['required', 'email:dns', 'max:40', 'unique:users,email'],
-            'email' => ['required', 'email:dns', 'max:40'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'email' => [
+                'required',
+                'email:dns',
+                'max:40',
+                // 'unique:users,email',
+                // 'unique:users',
+            ],
         ];
     }
 
     protected array $messages = [
-        'email.unique' => 'El correo electronico ingresado ya está registrado.',
+        'name.required' => 'Debes ingresar el nombre del usuario.',
+        'name.max' => 'El nombre no puede superar los 255 caracteres.',
+
+        'email.required' => 'Debes ingresar el correo electrónico.',
+        'email.email' => 'El correo electrónico ingresado no es válido.',
+        'email.max' => 'El correo electrónico no puede superar los 40 caracteres.',
+        'email.unique' => 'El correo electrónico ingresado ya está registrado.',
     ];
 
-    // En el componente Livewire
-    protected $listeners = ['echo:user-channel,.user-email-sent' => 'onEmailSent'];
-
-    public function onEmailSent($data): void
-    {
-        $this->success($data['message']); // toast de MaryUI
-    }
-        
-    public function save()
-    {
-        $this->validate();
-
-        $plainPassword = Str::random(6);
-
+    public function save(
+        ErrorLogger $errorLogger
+    ) {
         try {
-            $user = User::create([
-                    'name'               => $this->name,
-                    'email'              => $this->email,
-                    //  'movil'              => $this->movil,
-                    'email_verified_at'  => now(),
-                    'password'           => Hash::make($plainPassword),
-                    'remember_token'     => Str::random(6),
-                ]);
+            $this->name = trim($this->name);
+            $this->email = Str::lower(trim($this->email));
 
-            event(new UserCreated($user, $plainPassword));
+            $validated = $this->validate();
 
-            $this->toast(
-                type: 'success',
-                title: 'Usuario creado',
-                description: 'El usuario se ha registrado correctamente',
-                timeout: 5000
+            $plainPassword = Str::random(6);
+
+            $user = new User();
+
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+
+            /*
+             * PROPUESTO:
+             * La columna state es obligatoria y la vista actual
+             * no permite elegir estado.
+             *
+             * Un usuario nuevo se crea activo.
+             */
+            $user->state = 'VIGENTE';
+
+            $user->email_verified_at = now();
+
+            /*
+             * App\Models\Central\User tiene cast:
+             *
+             * 'password' => 'hashed'
+             *
+             * por lo que Eloquent realizará el hash.
+             */
+            $user->password = $plainPassword;
+
+            $user->remember_token = Str::random(60);
+
+            $user->save();
+        } catch (ValidationException $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'central.user.create',
+                    'error_type' => 'validation',
+                    'validation_errors' => $exception->errors(),
+                ]
             );
 
-            // $this->redirectRoute('tenant.users.index');
+            $message = collect($exception->errors())
+                ->flatten()
+                ->first();
 
-        } catch (QueryException $e) {
+            session()->flash(
+                'error',
+                $message ?? 'Error de validación al crear el usuario.'
+            );
 
-            Log::error('Error SQL al crear usuario', [
-                'exception' => $e,
-                'sql'       => $e->getSql(),
-                'bindings'  => $e->getBindings(),
-                'tenant'    => tenant('id') ?? 'central',
-            ]);
+            return redirect()->route('central.users.create');
+        } catch (QueryException $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'central.user.create',
+                    'error_type' => 'database',
+                ]
+            );
 
-            $this->error($e->getMessage(),timeout: 5000,);
+            session()->flash(
+                'error',
+                'Ocurrió un error de base de datos al crear el usuario.'
+            );
 
+            return redirect()->route('central.users.create');
+        } catch (Throwable $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'central.user.create',
+                    'error_type' => 'unexpected',
+                ]
+            );
 
-        } catch (Throwable $e) {           
+            session()->flash(
+                'error',
+                'Ocurrió un error inesperado al crear el usuario.'
+            );
 
-            $this->error($e->getMessage(),timeout: 5000,);
+            return redirect()->route('central.users.create');
         }
 
-       
+        /*
+         * La creación del usuario ya terminó correctamente.
+         *
+         * La notificación se maneja aparte para que un fallo en
+         * correo/broadcast no haga creer que el usuario no se creó.
+         */
+        try {
+            event(
+                new UserCreated(
+                    $user,
+                    $plainPassword
+                )
+            );
+        } catch (Throwable $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'central.user.created.notification',
+                    'user_id' => $user->id,
+                    'error_type' => 'notification',
+                ]
+            );
+
+            session()->flash(
+                'error',
+                sprintf(
+                    'El usuario "%s" fue creado correctamente, pero ocurrió un error al procesar su notificación.',
+                    $user->name
+                )
+            );
+
+            return redirect()->route('central.users.index');
+        }
+
+        session()->flash(
+            'success',
+            sprintf(
+                'El usuario "%s" fue creado correctamente.',
+                $user->name
+            )
+        );
+
+        return redirect()->route('central.users.index');
     }
 
     public function render()
     {
-        return view('livewire.central.user.user-create');
+        return view(
+            'livewire.central.user.user-create'
+        );
     }
 }
