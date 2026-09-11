@@ -80,7 +80,7 @@ final class PermissionTable extends PowerGridComponent
         int $id
     ): void {
         try {
-            $permissionName = $deletePermission->delete($id);           
+            $permissionName = $deletePermission->delete($id);
 
             session()->flash(
                 'success',
@@ -88,40 +88,6 @@ final class PermissionTable extends PowerGridComponent
                     'El permiso "%s" fue eliminado correctamente.',
                     $permissionName
                 )
-            );
-        } catch (DomainException $exception) {
-            /*
-            * Restricción esperada de negocio.
-            *
-            * Ejemplos:
-            * - permiso asociado a roles;
-            * - permiso asignado directamente;
-            * - permiso que ya no existe.
-            *
-            * No se registra en error_logs porque no representa
-            * un fallo del sistema.
-            */
-            session()->flash(
-                'error',
-                $exception->getMessage()
-            );
-        } catch (QueryException $exception) {
-            /*
-            * Error real de base de datos.
-            * Se registra mediante el mecanismo central de SSR.
-            */
-            $errorLogger->report(
-                $exception,
-                [
-                    'operation' => 'permission.destroy',
-                    'permission_id' => $id,
-                    'error_type' => 'database',
-                ]
-            );
-
-            session()->flash(
-                'error',
-                'Ocurrió un error de base de datos al eliminar el permiso.'
             );
         } catch (DomainException $exception) {
             $errorLogger->report(
@@ -136,6 +102,34 @@ final class PermissionTable extends PowerGridComponent
             session()->flash(
                 'error',
                 $exception->getMessage()
+            );
+        } catch (QueryException $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'permission.destroy',
+                    'permission_id' => $id,
+                    'error_type' => 'database',
+                ]
+            );
+
+            session()->flash(
+                'error',
+                'Ocurrió un error de base de datos al eliminar el permiso.'
+            );
+        } catch (Throwable $exception) {
+            $errorLogger->report(
+                $exception,
+                [
+                    'operation' => 'permission.destroy',
+                    'permission_id' => $id,
+                    'error_type' => 'unexpected',
+                ]
+            );
+
+            session()->flash(
+                'error',
+                'Ocurrió un error inesperado al eliminar el permiso.'
             );
         }
 
