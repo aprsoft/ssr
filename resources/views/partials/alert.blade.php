@@ -21,7 +21,7 @@
         realtimeTimer: null,
 
         showRealtimeSuccess(message) {
-            if (!message) {
+            if (! message) {
                 return;
             }
 
@@ -41,9 +41,16 @@
 >
     {{-- Éxito de sesión --}}
     @if (session('success'))
-        <x-ui.alert variant="success">
-            {{ session('success') }}
-        </x-ui.alert>
+        <div
+            x-data="{ visible: true }"
+            x-init="setTimeout(() => visible = false, 5000)"
+            x-show="visible"
+            x-transition
+        >
+            <x-ui.alert variant="success">
+                {{ session('success') }}
+            </x-ui.alert>
+        </div>
     @endif
 
     {{-- Éxito recibido por Reverb --}}
@@ -70,16 +77,23 @@
 
     {{-- Error general --}}
     @if (session('error'))
-        <x-ui.alert variant="error">
-            {{ session('error') }}
-        </x-ui.alert>
+        <div
+            x-data="{ visible: true }"
+            x-init="setTimeout(() => visible = false, 8000)"
+            x-show="visible"
+            x-transition
+        >
+            <x-ui.alert variant="error">
+                {{ session('error') }}
+            </x-ui.alert>
+        </div>
     @endif
 </div>
 
 @if ($realtimeChannel)
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (!window.Echo) {
+            if (! window.Echo) {
                 console.error(
                     'Laravel Echo no está disponible para las notificaciones realtime.'
                 );
