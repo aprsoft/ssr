@@ -21,6 +21,12 @@ class SendEmailSentNotification
      */
     public function handle(UserEmailSent $event)
     {
+        session()->flash(
+                'error',
+                sprintf(
+                    $event->message
+                )
+            );
        return redirect()->route('central.users.index');
     }
 }
