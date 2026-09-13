@@ -1,0 +1,36 @@
+
+
+AppServiceProvider
+        │
+        ├── Gate::before()
+        │      └── SuperAdmin autorizado globalmente
+        │
+        ├── Queue::createPayloadUsing()
+        │      └── guarda quién originó el Job
+        │
+        ├── Queue::after()
+        │      └── Job exitoso
+        │             ↓
+        │       JobSuccessHandler
+        │
+        └── Queue::failing()
+               └── Job fallido
+                      ↓
+                JobFailureHandler
+
+
+1. Usuario ejecuta una acción
+2. Se despacha un Job
+3. createPayloadUsing() guarda contexto
+4. Termina la petición HTTP
+5. queue:work recoge el Job
+6. Ejecuta handle()
+
+   si funciona:
+      Queue::after()
+      → JobSuccessHandler
+
+   si falla definitivamente:
+      Queue::failing()
+      → JobFailureHandler
+

@@ -50,7 +50,9 @@ final class UserTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
+            Column::make('Id', 'id')
+                ->sortable(),
+                
             Column::make('Nombre', 'name')
                 ->sortable()
                 ->searchable(),
