@@ -19,8 +19,8 @@ class SendEmailSentNotification
     /**
      * Handle the event.
      */
-    public function handle(UserEmailSent $event): void
+    public function handle(UserEmailSent $event)
     {
-         dd($event);
+       return redirect()->route('central.users.index');
     }
 }
