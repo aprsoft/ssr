@@ -2,31 +2,53 @@
 
 namespace App\Events;
 
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Foundation\Events\Dispatchable;
 
-class UserEmailSent implements ShouldBroadcast
+class UserEmailSent implements ShouldBroadcastNow
 {
-    use Dispatchable, InteractsWithSockets;
+    use Dispatchable;
+    use InteractsWithSockets;
 
-    public $message;
-
-    public function __construct($message)
-    {   
-       
-        $this->message = $message;
+    public function __construct(
+        public string $scope,
+        public int $userId,
+        public ?string $tenantId,
+        public string $message
+    ) {
     }
 
     public function broadcastOn(): array
     {
-        return [new Channel('user-channel')];
+        if ($this->scope === 'tenant' && $this->tenantId !== null) {
+            return [
+                new PrivateChannel(
+                    'ssr.tenant.'
+                    .$this->tenantId
+                    .'.user.'
+                    .$this->userId
+                ),
+            ];
+        }
+
+        return [
+            new PrivateChannel(
+                'ssr.central.user.'.$this->userId
+            ),
+        ];
     }
 
-    public function broadcastAs()
+    public function broadcastAs(): string
     {
         return 'user-email-sent';
     }
-}
 
+    public function broadcastWith(): array
+    {
+        return [
+            'message' => $this->message,
+        ];
+    }
+}
