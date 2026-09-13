@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use App\Jobs\SendEmailJob;
-use App\Services\Error\ErrorLogger;
+use App\Services\Queue\JobFailureHandler;
+use App\Services\Queue\JobSuccessHandler;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
@@ -26,11 +27,12 @@ class AppServiceProvider extends ServiceProvider
 
         /*
         |--------------------------------------------------------------------------
-        | Contexto de notificación de jobs
+        | Contexto del usuario que originó el Job
         |--------------------------------------------------------------------------
         |
-        | Permite saber qué usuario y contexto originaron un SendEmailJob.
-        | Este dato posteriormente estará disponible en JobProcessed.
+        | Se agrega a cualquier Job despachado desde una petición autenticada.
+        | Si el Job no necesita notificar al usuario, simplemente será ignorado
+        | posteriormente por JobNotificationService.
         |
         */
         Queue::createPayloadUsing(
@@ -39,12 +41,10 @@ class AppServiceProvider extends ServiceProvider
                 ?string $queue,
                 array $payload
             ): array {
-                if (($payload['displayName'] ?? null) !== SendEmailJob::class) {
-                    return [];
-                }
-
                 /*
                  * Contexto Tenant.
+                 *
+                 * Si tenancy está inicializado, nunca debemos caer al guard web.
                  */
                 if (tenant() !== null) {
                     $userId = auth('tenant')->id();
@@ -81,20 +81,22 @@ class AppServiceProvider extends ServiceProvider
             }
         );
 
-        Queue::failing(function (JobFailed $event): void {
-            $payload = $event->job->payload();
+        /*
+        |--------------------------------------------------------------------------
+        | Job procesado correctamente
+        |--------------------------------------------------------------------------
+        */
+        Queue::after(function (JobProcessed $event): void {
+            app(JobSuccessHandler::class)->handle($event);
+        });
 
-            app(ErrorLogger::class)->report(
-                $event->exception,
-                [
-                    'operation' => 'queue.job.failed',
-                    'error_type' => 'queue',
-                    'connection' => $event->connectionName,
-                    'job_id' => $event->job->getJobId(),
-                    'job_uuid' => $event->job->uuid(),
-                    'job' => $payload['displayName'] ?? null,
-                ]
-            );
+        /*
+        |--------------------------------------------------------------------------
+        | Job fallido
+        |--------------------------------------------------------------------------
+        */
+        Queue::failing(function (JobFailed $event): void {
+            app(JobFailureHandler::class)->handle($event);
         });
     }
 }

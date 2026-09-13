@@ -17,26 +17,41 @@
 
 <div
     x-data="{
-        realtimeSuccess: null,
+        realtimeType: null,
+        realtimeMessage: null,
         realtimeTimer: null,
 
-        showRealtimeSuccess(message) {
-            if (! message) {
+        showRealtime(type, message) {
+            if (
+                ! ['success', 'error'].includes(type)
+                || ! message
+            ) {
                 return;
             }
 
-            this.realtimeSuccess = message;
+            this.realtimeType = type;
+            this.realtimeMessage = message;
 
             clearTimeout(this.realtimeTimer);
 
+            const timeout = type === 'error'
+                ? 8000
+                : 7000;
+
             this.realtimeTimer = setTimeout(() => {
-                this.realtimeSuccess = null;
-            }, 7000);
+                this.realtimeType = null;
+                this.realtimeMessage = null;
+            }, timeout);
         }
     }"
-    x-on:ssr-realtime-success.window="
-        showRealtimeSuccess($event.detail.message)
+
+    x-on:ssr-job-notification.window="
+        showRealtime(
+            $event.detail.type,
+            $event.detail.message
+        )
     "
+
     class="space-y-3"
 >
     {{-- Éxito de sesión --}}
@@ -53,14 +68,31 @@
         </div>
     @endif
 
-    {{-- Éxito recibido por Reverb --}}
+    {{-- Notificación realtime de éxito --}}
     <div
-        x-show="realtimeSuccess"
+        x-show="
+            realtimeMessage
+            && realtimeType === 'success'
+        "
         x-transition
         style="display: none;"
     >
         <x-ui.alert variant="success">
-            <span x-text="realtimeSuccess"></span>
+            <span x-text="realtimeMessage"></span>
+        </x-ui.alert>
+    </div>
+
+    {{-- Notificación realtime de error --}}
+    <div
+        x-show="
+            realtimeMessage
+            && realtimeType === 'error'
+        "
+        x-transition
+        style="display: none;"
+    >
+        <x-ui.alert variant="error">
+            <span x-text="realtimeMessage"></span>
         </x-ui.alert>
     </div>
 
@@ -92,29 +124,36 @@
 
 @if ($realtimeChannel)
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (! window.Echo) {
-                console.error(
-                    'Laravel Echo no está disponible para las notificaciones realtime.'
-                );
-
-                return;
-            }
-
-            window.Echo
-                .private(@js($realtimeChannel))
-                .listen('.user-email-sent', (event) => {
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            'ssr-realtime-success',
-                            {
-                                detail: {
-                                    message: event.message,
-                                },
-                            }
-                        )
+        document.addEventListener(
+            'DOMContentLoaded',
+            () => {
+                if (! window.Echo) {
+                    console.error(
+                        'Laravel Echo no está disponible.'
                     );
-                });
-        });
+
+                    return;
+                }
+
+                window.Echo
+                    .private(@js($realtimeChannel))
+                    .listen(
+                        '.job-notification',
+                        (event) => {
+                            window.dispatchEvent(
+                                new CustomEvent(
+                                    'ssr-job-notification',
+                                    {
+                                        detail: {
+                                            type: event.type,
+                                            message: event.message,
+                                        },
+                                    }
+                                )
+                            );
+                        }
+                    );
+            }
+        );
     </script>
 @endif

@@ -3,14 +3,12 @@
 namespace App\Jobs;
 
 use App\Mail\GenericMail;
-use App\Services\Error\ErrorLogger;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-use Throwable;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -21,13 +19,9 @@ class SendEmailJob implements ShouldQueue
 
     public array $payload;
 
-    public ?string $tenantId = null;
-
     public function __construct(array $payload)
     {
         $this->payload = $payload;
-
-        $this->tenantId = tenant()?->id;
     }
 
     public function handle(): void
@@ -42,22 +36,5 @@ class SendEmailJob implements ShouldQueue
                         $this->payload['customAttachments'] ?? []
                 )
             );
-    }
-
-    public function failed(?Throwable $exception): void
-    {
-        if (! $exception) {
-            return;
-        }
-
-        app(ErrorLogger::class)->report(
-            $exception,
-            [
-                'operation' => 'email.send',
-                'tenant_id' => $this->tenantId,
-                'recipient' => $this->payload['to'] ?? null,
-                'error_type' => 'queue',
-            ]
-        );
     }
 }
