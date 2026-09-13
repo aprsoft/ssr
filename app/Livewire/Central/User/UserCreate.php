@@ -46,9 +46,7 @@ class UserCreate extends Component
         'email.unique' => 'El correo electrónico ingresado ya está registrado.',
     ];
 
-    public function save(
-        ErrorLogger $errorLogger
-    ) {
+    public function save(ErrorLogger $errorLogger) {
         try {
             $this->name = trim($this->name);
             $this->email = Str::lower(trim($this->email));

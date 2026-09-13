@@ -29,3 +29,4 @@ class UserEmailSent implements ShouldBroadcast
         return 'user-email-sent';
     }
 }
+

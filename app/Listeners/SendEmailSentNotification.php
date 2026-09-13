@@ -21,6 +21,6 @@ class SendEmailSentNotification
      */
     public function handle(UserEmailSent $event): void
     {
-        //
+         dd($event);
     }
 }
