@@ -37,7 +37,5 @@ class TenantController extends Controller
         $tenant->load('domains');
 
         return view('central.tenants.edit', compact('tenant'));
-    }  
-
-    
+    }     
 }

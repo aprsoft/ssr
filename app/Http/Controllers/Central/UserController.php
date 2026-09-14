@@ -23,13 +23,4 @@ class UserController extends Controller
         return  view('central.users.edit',['title'=>'Editar Usuario']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
-    {
-        $user->update($request->validated());
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
-    }
 }
