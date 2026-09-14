@@ -16,12 +16,12 @@ class UserSeeder extends Seeder
         $tenantName = tenant('id');       
 
         User::factory()->create([
-            'name' => 'SuperAdmin',            
+            // 'name' => 'SuperAdmin',            
             'email' => 'admin@aprsoft.cl',
         ])->assignRole('SuperAdmin');
 
         User::factory()->create([        
-            'name' => 'Admin',              
+            // 'name' => 'Admin',              
             'email' => $tenantName.'@aprsoft.cl',
         ])->assignRole('SuperAdmin');
         
