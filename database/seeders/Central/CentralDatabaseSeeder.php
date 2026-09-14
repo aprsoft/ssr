@@ -17,12 +17,12 @@ class CentralDatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([            
-            'name' => 'SuperAdmin',            
+            // 'name' => 'SuperAdmin',            
             'email' => 'superadmin@aprsoft.cl',
         ])->assignRole('SuperAdmin');
 
         User::factory()->create([            
-            'name' => 'Admin',            
+            // 'name' => 'Admin',            
             'email' => 'admin@aprsoft.cl',
         ])->assignRole('Admin');
     }
