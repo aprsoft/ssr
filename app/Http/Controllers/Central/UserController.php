@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Central;
 
-use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 
 class UserController extends Controller
