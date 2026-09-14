@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Central;
 
-use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 class RoleController
