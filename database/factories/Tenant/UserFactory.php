@@ -24,41 +24,15 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'rut' => $this->generateRut(), 
-            'name' => fake()->name(),  
-            'apellido_paterno'=> fake()->lastName(), 
-            'apellido_materno'=> fake()->lastName(),                     
+           
+            'name' => fake()->name(),                            
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'is_active' => true,
         ];
-    }
-
-    // Genera un RUN/RUT concatenado (EJ: 123456789)
- 
-    private function generateRut(): string
-    {
-        $number = fake()->numberBetween(1000000, 25000000); // rango real RUT
-        $dv = $this->computeDv($number);
-
-        return $number . $dv; // sin puntos ni guion
-    }
-
-    /**
-     * Calcula el dígito verificador
-     */
-    private function computeDv(int $number): string
-    {
-        $s = 1;
-        $m = 0;
-
-        for (; $number; $number = intdiv($number, 10)) {
-            $s = ($s + ($number % 10) * (9 - $m++ % 6)) % 11;
-        }
-
-        return $s ? chr($s + 47) : 'K';
-    }
+    }   
 
     /**
      * Indicate that the model's email address should be unverified.

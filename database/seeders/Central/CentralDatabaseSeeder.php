@@ -16,19 +16,13 @@ class CentralDatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
         ]);
 
-        User::factory()->create([
-            'rut' => '66666666',
-            'name' => 'RODRIGO',
-            'apellido_paterno' => 'ROJAS',
-            'apellido_materno' => 'RUIZ',
+        User::factory()->create([            
+            'name' => 'SuperAdmin',            
             'email' => 'superadmin@aprsoft.cl',
         ])->assignRole('SuperAdmin');
 
-        User::factory()->create([
-            'rut' => '11111111',
-            'name' => 'admin',
-            'apellido_paterno' => 'ROJAS',
-            'apellido_materno' => 'RUIZ',
+        User::factory()->create([            
+            'name' => 'Admin',            
             'email' => 'admin@aprsoft.cl',
         ])->assignRole('Admin');
     }
