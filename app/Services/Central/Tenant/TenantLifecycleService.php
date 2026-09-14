@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Central\Tenant;
+namespace App\Services\Tenant;
 
 use App\Models\Central\Tenant;
 use DomainException;
