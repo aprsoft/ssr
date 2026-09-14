@@ -54,20 +54,7 @@ use Illuminate\Support\Facades\Route;
           
             // 4. RUTAS GENERALES CON {tenant} (al final)
             Route::get('tenants/{tenant}', [TenantController::class, 'show'])
-                ->name('tenants.show');
-
-            Route::patch(
-                'tenants/{tenant}/suspend',
-                [TenantController::class, 'suspend']
-            )->name('tenants.suspend');
-
-            Route::patch(
-                'tenants/{tenant}/restore',
-                [TenantController::class, 'restore']
-            )->name('tenants.restore');
-
-            // Route::delete('tenants/{tenant}/delete', [TenantController::class, 'destroy'])
-            //     ->name('tenants.destroy');
+                ->name('tenants.show');            
 
             /*
             |--------------------------------------------------------------------------

@@ -4,7 +4,7 @@ namespace App\Livewire\Central\Tenant;
 
 use App\Models\Central\Tenant;
 use App\Services\Error\ErrorLogger;
-use App\Services\Tenant\UpdateTenantService;
+use App\Services\Central\Tenant\UpdateTenantService;
 use DomainException;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rule;

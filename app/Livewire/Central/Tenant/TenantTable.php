@@ -12,6 +12,12 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
+
+use App\Services\Error\ErrorLogger;
+use App\Services\Central\Tenant\TenantLifecycleService;
+use DomainException;
+use Throwable;
+
 final class TenantTable extends PowerGridComponent
 {
     public string  $tableName = 'tenantTable';
@@ -100,34 +106,192 @@ final class TenantTable extends PowerGridComponent
     }
 
 
+    // #[\Livewire\Attributes\On('suspend')]
+    // public function suspend(string $tenantId): void
+    // {
+    //     $tenant = Tenant::findOrFail($tenantId);
+
+    //     $tenant->delete();
+
+    //     $this->dispatch('$refresh');
+    // }
+
+    // #[\Livewire\Attributes\On('restore')]
+    // public function restore(string $tenantId): void
+    // {
+    //     $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
+
+    //     $tenant->restore();
+
+    //     $this->dispatch('$refresh');
+    // }
+
+    // #[\Livewire\Attributes\On('destroy')]
+    // public function destroy(string $tenantId): void
+    // {
+    //     $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
+
+    //     $tenant->forceDelete();
+
+    //     $this->dispatch('$refresh');
+    // }
     #[\Livewire\Attributes\On('suspend')]
-    public function suspend(string $tenantId): void
-    {
-        $tenant = Tenant::findOrFail($tenantId);
+    public function suspend(
+        TenantLifecycleService $tenantLifecycle,
+        ErrorLogger $errorLogger,
+        string $tenantId
+    ): void {
+        try {
+            $tenantLifecycle->suspend($tenantId);
 
-        $tenant->delete();
+            session()->flash(
+                'success',
+                "El Tenant '{$tenantId}' fue suspendido correctamente."
+            );
 
-        $this->dispatch('$refresh');
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        } catch (DomainException $exception) {
+            $errorLogger->report($exception, [
+                'operation' => 'tenant.suspend',
+                'tenant_id' => $tenantId,
+                'error_type' => 'business',
+            ]);
+
+            session()->flash(
+                'error',
+                $exception->getMessage()
+            );
+
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        } catch (Throwable $exception) {
+            $errorLogger->report($exception, [
+                'operation' => 'tenant.suspend',
+                'tenant_id' => $tenantId,
+                'error_type' => 'unexpected',
+            ]);
+
+            session()->flash(
+                'error',
+                'Ocurrió un error inesperado al suspender el tenant.'
+            );
+
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        }
     }
 
     #[\Livewire\Attributes\On('restore')]
-    public function restore(string $tenantId): void
-    {
-        $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
+    public function restore(
+        TenantLifecycleService $tenantLifecycle,
+        ErrorLogger $errorLogger,
+        string $tenantId
+    ): void {
+        try {
+            $tenantLifecycle->restore($tenantId);
 
-        $tenant->restore();
+            session()->flash(
+                'success',
+                "El Tenant '{$tenantId}' fue restaurado correctamente."
+            );
 
-        $this->dispatch('$refresh');
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        } catch (DomainException $exception) {
+            $errorLogger->report($exception, [
+                'operation' => 'tenant.restore',
+                'tenant_id' => $tenantId,
+                'error_type' => 'business',
+            ]);
+
+            session()->flash(
+                'error',
+                $exception->getMessage()
+            );
+
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        } catch (Throwable $exception) {
+            $errorLogger->report($exception, [
+                'operation' => 'tenant.restore',
+                'tenant_id' => $tenantId,
+                'error_type' => 'unexpected',
+            ]);
+
+            session()->flash(
+                'error',
+                'Ocurrió un error inesperado al restaurar el tenant.'
+            );
+
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        }
     }
 
     #[\Livewire\Attributes\On('destroy')]
-    public function destroy(string $tenantId): void
-    {
-        $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
+    public function destroy(
+        TenantLifecycleService $tenantLifecycle,
+        ErrorLogger $errorLogger,
+        string $tenantId
+    ): void {
+        try {
+            $tenantLifecycle->destroy($tenantId);
 
-        $tenant->forceDelete();
+            session()->flash(
+                'success',
+                "El Tenant '{$tenantId}' fue eliminado definitivamente."
+            );
 
-        $this->dispatch('$refresh');
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        } catch (DomainException $exception) {
+            $errorLogger->report($exception, [
+                'operation' => 'tenant.destroy',
+                'tenant_id' => $tenantId,
+                'error_type' => 'business',
+            ]);
+
+            session()->flash(
+                'error',
+                $exception->getMessage()
+            );
+
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        } catch (Throwable $exception) {
+            $errorLogger->report($exception, [
+                'operation' => 'tenant.destroy',
+                'tenant_id' => $tenantId,
+                'error_type' => 'unexpected',
+            ]);
+
+            session()->flash(
+                'error',
+                'Ocurrió un error inesperado al eliminar definitivamente el tenant.'
+            );
+
+            $this->redirectRoute(
+                'central.tenants.index',
+                ['status' => $this->status]
+            );
+        }
     }
 
     public function actions(Tenant $row): array

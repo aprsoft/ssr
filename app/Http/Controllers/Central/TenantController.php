@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Central\Controller;
 use App\Models\Central\Tenant;
-use App\Services\Error\ErrorLogger;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
