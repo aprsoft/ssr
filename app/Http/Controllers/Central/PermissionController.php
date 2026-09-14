@@ -7,19 +7,13 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('central.permission.index', [
             'title' => 'Permisos',
         ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+ 
     public function create()
     {
         return view('central.permission.create', [
@@ -27,19 +21,11 @@ class PermissionController
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * La creación real se realiza en el componente Livewire CreatePermission.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $permission = Permission::query()
@@ -55,9 +41,6 @@ class PermissionController
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $permission = Permission::query()
@@ -68,23 +51,5 @@ class PermissionController
             'title' => 'Editar Permiso',
             'permission' => $permission,
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * La actualización real se realiza en el componente Livewire EditPermission.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
