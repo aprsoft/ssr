@@ -25,6 +25,8 @@ final class TenantTable extends PowerGridComponent
 
     public function setUp(): array
     {
+        
+
         return [
             PowerGrid::header()
                 ->showSearchInput(),
@@ -41,13 +43,25 @@ final class TenantTable extends PowerGridComponent
             'suspended' => Tenant::onlyTrashed(),
             default => Tenant::withTrashed(),
         };
-    } 
+    }
+
+ 
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
             ->add('id')
-       
+            // ->add('link', function ($tenant) {
+            //     $url = 'http://' . $tenant->id . '.ssr.test';
+            //     return sprintf(
+            //         '<a target="_blank"
+            //         class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+            //         href="%s">%s</a>',
+            //         $url,
+            //         $tenant->id
+            //     );
+            // })
+
             ->add('link', function ($tenant) {
                 $scheme = env('APP_DEBUG')? 'http' : 'https';
                 $domain = env('APP_DEBUG')? 'ssr.test' : 'aprsoft.cl';
@@ -121,9 +135,7 @@ final class TenantTable extends PowerGridComponent
 
     //     $this->dispatch('$refresh');
     // }
-
-
-    #[\Livewire\Attributes\On('tenant-suspend-confirmed')]
+    #[\Livewire\Attributes\On('suspend')]
     public function suspend(
         TenantLifecycleService $tenantLifecycle,
         ErrorLogger $errorLogger,
@@ -182,7 +194,7 @@ final class TenantTable extends PowerGridComponent
         ErrorLogger $errorLogger,
         string $tenantId
     ): void {
-        try {dd(4);
+        try {
             $tenantLifecycle->restore($tenantId);
 
             session()->flash(
