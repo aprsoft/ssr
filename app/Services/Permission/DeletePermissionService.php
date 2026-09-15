@@ -10,9 +10,7 @@ class DeletePermissionService
 {
     public function delete(int $id): string
     {
-        return DB::transaction(function () use ($id): string {
-
-           
+        return DB::transaction(function () use ($id): string {           
 
             $permission = Permission::query()
                 ->where('guard_name', 'web')
