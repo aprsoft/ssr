@@ -6,9 +6,10 @@
             id: null,
             name: '',
             confirmEvent: null,
-            title: 'Confirmar eliminación',
-            message: '¿Está seguro de que desea eliminar este registro?',
-            warning: 'Esta acción no se puede deshacer.',
+            title: 'Confirmar acción',
+            message: '¿Está seguro de que desea continuar?',
+            warning: '',
+            confirmLabel: 'Confirmar',
         },
 
         show(event) {
@@ -16,11 +17,11 @@
                 id: event.detail?.id ?? null,
                 name: event.detail?.name ?? '',
                 confirmEvent: event.detail?.confirmEvent ?? null,
-                title: event.detail?.title ?? 'Confirmar eliminación',
+                title: event.detail?.title ?? 'Confirmar acción',
                 message: event.detail?.message
-                    ?? '¿Está seguro de que desea eliminar este registro?',
-                warning: event.detail?.warning
-                    ?? 'Esta acción no se puede deshacer.',
+                    ?? '¿Está seguro de que desea continuar?',
+                warning: event.detail?.warning ?? '',
+                confirmLabel: event.detail?.confirmLabel ?? 'Confirmar',
             };
 
             if (
@@ -42,9 +43,10 @@
                 id: null,
                 name: '',
                 confirmEvent: null,
-                title: 'Confirmar eliminación',
-                message: '¿Está seguro de que desea eliminar este registro?',
-                warning: 'Esta acción no se puede deshacer.',
+                title: 'Confirmar acción',
+                message: '¿Está seguro de que desea continuar?',
+                warning: '',
+                confirmLabel: 'Confirmar',
             };
         },
 
@@ -66,7 +68,6 @@
             this.close();
         },
     }"
-
     x-on:open-confirm-modal.window="show($event)"
     x-on:keydown.escape.window="if (open) close()"
 >
@@ -206,10 +207,8 @@
                                disabled:cursor-not-allowed
                                disabled:opacity-50
                                dark:focus:ring-offset-gray-900"
-                    >
-                        Eliminar
-                    </button>
-
+                        x-text="payload.confirmLabel"
+                    ></button>
                 </div>
             </div>
         </div>

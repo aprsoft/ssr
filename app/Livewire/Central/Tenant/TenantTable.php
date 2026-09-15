@@ -90,61 +90,30 @@ final class TenantTable extends PowerGridComponent
             
         ];
     }
-
-
-    // #[\Livewire\Attributes\On('suspend')]
-    // public function suspend(string $tenantId): void
-    // {
-    //     $tenant = Tenant::findOrFail($tenantId);
-
-    //     $tenant->delete();
-
-    //     $this->dispatch('$refresh');
-    // }
-
-    // #[\Livewire\Attributes\On('restore')]
-    // public function restore(string $tenantId): void
-    // {
-    //     $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
-
-    //     $tenant->restore();
-
-    //     $this->dispatch('$refresh');
-    // }
-
-    // #[\Livewire\Attributes\On('destroy')]
-    // public function destroy(string $tenantId): void
-    // {
-    //     $tenant = Tenant::onlyTrashed()->findOrFail($tenantId);
-
-    //     $tenant->forceDelete();
-
-    //     $this->dispatch('$refresh');
-    // }
-
+   
 
     #[\Livewire\Attributes\On('tenant-suspend-confirmed')]
     public function suspend(
         TenantLifecycleService $tenantLifecycle,
         ErrorLogger $errorLogger,
-        string $tenantId
+        string $id
     ): void {
         try {
-            $tenantLifecycle->suspend($tenantId);
+            $tenantLifecycle->suspend($id);
 
             session()->flash(
                 'success',
-                "El Tenant '{$tenantId}' fue suspendido correctamente."
+                "El Tenant '{$id}' fue suspendido correctamente."
             );
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' =>'suspended']
             );
         } catch (DomainException $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'tenant.suspend',
-                'tenant_id' => $tenantId,
+                'tenant_id' => $id,
                 'error_type' => 'business',
             ]);
 
@@ -155,12 +124,12 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => '']
             );
         } catch (Throwable $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'tenant.suspend',
-                'tenant_id' => $tenantId,
+                'tenant_id' => $id,
                 'error_type' => 'unexpected',
             ]);
 
@@ -171,33 +140,33 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => '']
             );
         }
     }
 
-    #[\Livewire\Attributes\On('restore')]
+    #[\Livewire\Attributes\On('tenant-restore-confirmed')]
     public function restore(
         TenantLifecycleService $tenantLifecycle,
         ErrorLogger $errorLogger,
-        string $tenantId
+        string $id
     ): void {
-        try {dd(4);
-            $tenantLifecycle->restore($tenantId);
+        try {
+            $tenantLifecycle->restore($id);
 
             session()->flash(
                 'success',
-                "El Tenant '{$tenantId}' fue restaurado correctamente."
+                "El Tenant '{$id}' fue restaurado correctamente."
             );
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => 'active']
             );
         } catch (DomainException $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'tenant.restore',
-                'tenant_id' => $tenantId,
+                'tenant_id' => $id,
                 'error_type' => 'business',
             ]);
 
@@ -208,12 +177,12 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => '']
             );
         } catch (Throwable $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'tenant.restore',
-                'tenant_id' => $tenantId,
+                'tenant_id' => $id,
                 'error_type' => 'unexpected',
             ]);
 
@@ -224,33 +193,33 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => '']
             );
         }
     }
 
-    #[\Livewire\Attributes\On('destroy')]
+    #[\Livewire\Attributes\On('tenant-destroy-confirmed')]
     public function destroy(
         TenantLifecycleService $tenantLifecycle,
         ErrorLogger $errorLogger,
-        string $tenantId
+        string $id
     ): void {
         try {
-            $tenantLifecycle->destroy($tenantId);
+            $tenantLifecycle->destroy($id);
 
             session()->flash(
                 'success',
-                "El Tenant '{$tenantId}' fue eliminado definitivamente."
+                "El Tenant '{$id}' fue eliminado definitivamente."
             );
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => 'active']
             );
         } catch (DomainException $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'tenant.destroy',
-                'tenant_id' => $tenantId,
+                'tenant_id' => $id,
                 'error_type' => 'business',
             ]);
 
@@ -261,12 +230,12 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => 'active']
             );
         } catch (Throwable $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'tenant.destroy',
-                'tenant_id' => $tenantId,
+                'tenant_id' => $id,
                 'error_type' => 'unexpected',
             ]);
 
@@ -277,7 +246,7 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => $this->status]
+                ['status' => 'active']
             );
         }
     }
@@ -295,14 +264,32 @@ final class TenantTable extends PowerGridComponent
             $actions[] = Button::add('restore')
                 ->icon('default-restore')
                 ->class('px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center')
-                ->confirm('¿Está seguro de restaurar este tenant?')
-                ->dispatch('restore', ['tenantId' => $row->id]);
+                ->dispatch(
+                    'open-confirm-modal',
+                    [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'confirmEvent' => 'tenant-restore-confirmed',
+                        'title' => 'Restaurar Inquilino',
+                        'message' => '¿Está seguro de que desea restaurar este inquilino?',
+                        'warning' => '',
+                    ]
+                );
 
             $actions[] = Button::add('destroy')
                 ->icon('default-trash')
                 ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
-                ->confirm('¿Está seguro de eliminar definitivamente este tenant? Esta acción no se puede deshacer.')
-                ->dispatch('destroy', ['tenantId' => $row->id]);
+                ->dispatch(
+                    'open-confirm-modal',
+                    [
+                        'id' => $row->id,
+                        'name' => $row->name,
+                        'confirmEvent' => 'tenant-destroy-confirmed',
+                        'title' => 'Eliminar Inquilino',
+                        'message' => '¿Está seguro de que desea eliminar definitivamente este inquilino?',
+                        'warning' => 'Esta accion no puede se reversada',
+                    ]
+                );
         } else {
             $actions[] = Button::add('edit')
                 ->icon('default-pencil')
@@ -311,10 +298,8 @@ final class TenantTable extends PowerGridComponent
 
             $actions[] = Button::add('suspend')
                 ->icon('default-suspend')
-                ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')
-                // ->confirm('¿Está seguro de suspender este tenant?')
-                // ->dispatch('suspend', ['tenantId' => $row->id]);
-                 ->dispatch(
+                ->class('px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center')            
+                ->dispatch(
                     'open-confirm-modal',
                     [
                         'id' => $row->id,
