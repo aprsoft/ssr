@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         User::factory()->create([        
             // 'name' => 'Admin',              
             'email' => $tenantName.'@aprsoft.cl',
-        ])->assignRole('SuperAdmin');
+        ])->assignRole('Admin');
         
     }
 }
