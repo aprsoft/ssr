@@ -1,9 +1,9 @@
-@extends('layouts.central.app')
+@extends('layouts.tenant.app')
 
 @section('content')
     <x-common.page-breadcrumb pageTitle="Crear Rol" />
 
     <div class="space-y-6">
-        <livewire:central.role.create-role />
+        <livewire:tenant.role.create-role />
     </div>
 @endsection

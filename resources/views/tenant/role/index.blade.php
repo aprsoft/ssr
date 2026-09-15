@@ -1,4 +1,4 @@
-@extends('layouts.central.app')
+@extends('layouts.tenant.app')
 
 @section('content')
     <x-common.page-breadcrumb pageTitle="Roles" />
@@ -8,6 +8,6 @@
     </div>
 
     <div class="space-y-6">
-        <livewire:central.role.role-table/> 
+        <livewire:tenant.role.role-table/> 
     </div>
 @endsection

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Models\Tenant\ErrorLog;
-use Illuminate\Http\Request;
 
 class ErrorController
 {
@@ -13,6 +12,6 @@ class ErrorController
         $errorlogs = ErrorLog::all();
 
         // 2. Retornar la vista pasando los datos (ej: resources/views/central/users/index.blade.php)
-        return view('central.errors.index', compact('errorlogs'));
+        return view('tenant.errors.index', compact('errorlogs'));
     }
 }

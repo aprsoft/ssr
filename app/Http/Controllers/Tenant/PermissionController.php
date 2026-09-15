@@ -2,63 +2,50 @@
 
 namespace App\Http\Controllers\Tenant;
 
-use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 
 class PermissionController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-       return view('tenant.permission.index',['title'=>'Permisos']);
+        return view('tenant.permission.index', [
+            'title' => 'Permisos',
+        ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+ 
     public function create()
     {
-        //
+        return view('tenant.permission.create', [
+            'title' => 'Crear Permiso',
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
-        //
+        $permission = Permission::query()
+            ->where('guard_name', 'tenant')
+            ->with([
+                'roles' => fn ($query) => $query->orderBy('name'),
+            ])
+            ->findOrFail($id);
+
+        return view('tenant.permission.show', [
+            'title' => 'Ver Permiso',
+            'permission' => $permission,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
-    }
+        $permission = Permission::query()
+            ->where('guard_name', 'tenant')
+            ->findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('tenant.permission.edit', [
+            'title' => 'Editar Permiso',
+            'permission' => $permission,
+        ]);
     }
 }
