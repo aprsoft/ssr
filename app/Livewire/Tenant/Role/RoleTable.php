@@ -20,13 +20,13 @@ final class RoleTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
+        
 
         $route = Route::currentRouteName();
-        // dd($route);
+       
 
-       if ($route == 'tenant.roles.create') {
-        // dd(5);
+       if ($route == 'central.roles.create') {
+     
             $this->showCheckBox();
        } else {
 
@@ -64,9 +64,6 @@ final class RoleTable extends PowerGridComponent
             Column::make('Id', 'id'),
             Column::make('Rol', 'name')
                 ->sortable(),
-
-          
-
             Column::action('Acciones')
         ];
     }
@@ -86,11 +83,21 @@ final class RoleTable extends PowerGridComponent
     public function actions(Role $row): array
     {
         return [
+            Button::add('show')
+                ->icon('default-eye')
+                ->class(
+                    'px-2 py-1 bg-green-600 text-white rounded ' .
+                    'hover:bg-green-700 flex items-center justify-center'
+                )
+                ->route('central.roles.show', ['role' => $row->id]),
+
             Button::add('edit')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->icon('default-pencil')
+                ->class(
+                    'px-2 py-1 bg-gray-600 text-white rounded ' .
+                    'hover:bg-gray-700 flex items-center justify-center'
+                )
+                ->route('central.roles.edit', ['role' => $row->id])
         ];
     }
 

@@ -8,14 +8,40 @@ use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class CreateRole extends Component
+class EditRole extends Component
 {
+    public int $roleId;
+
     public string $role = '';
 
     public array $permissionIds = [];
 
-    public function save()
+    public function mount(int $roleId): void
     {
+        $role = Role::query()
+            ->where('guard_name', 'web')
+            ->with([
+                'permissions' => fn ($query) => $query
+                    ->where('guard_name', 'web'),
+            ])
+            ->findOrFail($roleId);
+
+        $this->roleId = $role->id;
+        $this->role = $role->name;
+
+        $this->permissionIds = $role->permissions
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();         
+    }
+
+    public function update()
+    {
+        $role = Role::query()
+            ->where('guard_name', 'web')
+            ->findOrFail($this->roleId);
+
         $validated = $this->validate([
             'role' => [
                 'required',
@@ -24,9 +50,12 @@ class CreateRole extends Component
                 Rule::unique(
                     config('permission.table_names.roles'),
                     'name'
-                )->where(
-                    fn ($query) => $query->where('guard_name', 'web')
-                ),
+                )
+                    ->where(
+                        fn ($query) => $query
+                            ->where('guard_name', 'web')
+                    )
+                    ->ignore($role->id),
             ],
 
             'permissionIds' => [
@@ -59,16 +88,15 @@ class CreateRole extends Component
             return;
         }
 
-        DB::transaction(function () use ($validated, $permissions): void {
-            $role = Role::create([
+        DB::transaction(function () use ($role, $validated, $permissions): void {
+            $role->update([
                 'name' => trim($validated['role']),
-                'guard_name' => 'web',
             ]);
 
             $role->syncPermissions($permissions);
         });
 
-        session()->flash('success', 'Rol creado correctamente.');
+        session()->flash('success', 'Rol actualizado correctamente.');
 
         return redirect()->route('central.roles.index');
     }
@@ -90,7 +118,7 @@ class CreateRole extends Component
             )
             ->values();
 
-        return view('livewire.central.role.create-role', [
+        return view('livewire.central.role.edit-role', [
             'permissions' => $permissions,
             'selectedPermissions' => $selectedPermissions,
         ]);
