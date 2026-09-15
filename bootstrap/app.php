@@ -39,11 +39,11 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->group(base_path('routes/web.php'));
 
                     
-                Route::middleware([
-                    'web',
-                    InitializeTenancyByDomain::class,
-                    PreventAccessFromCentralDomains::class,
-                ])->group(base_path('routes/customer.php'));     
+                // Route::middleware([
+                //     'web',
+                //     InitializeTenancyByDomain::class,
+                //     PreventAccessFromCentralDomains::class,
+                // ])->group(base_path('routes/customer.php'));     
                 
         }
     )
@@ -72,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return route('tenant.login');
-            return route('customer.login');
+                return route('customer.login');
         });
 
         // REDIRECCIÓN PARA USUARIOS AUTENTICADOS (evita que vean login)
@@ -85,7 +85,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return route('tenant.dashboard');
-            return route('customer.dashboard');
+            // return route('customer.dashboard');
         });
     })
     
