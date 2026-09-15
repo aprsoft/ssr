@@ -26,14 +26,5 @@ class UserController extends Controller
         $roles = Role::all();
         return  view('tenant.users.edit',['title'=>'Editar Usuario', 'roles'=>$roles]);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
-    {
-        $user->update($request->validated());
-
-        return redirect()->route('tenant.users.index')->with('success', 'User updated successfully');
-    }
+   
 }

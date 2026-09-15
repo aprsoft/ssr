@@ -28,31 +28,27 @@ use Illuminate\Support\Facades\Route;
             | Users
             |--------------------------------------------------------------------------
             */
+
             Route::get('users', [UserController::class, 'index'])->name('users.index');
             Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-            Route::post('users', [UserController::class, 'store'])->name('users.store');
             Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
             Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-            Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
-            Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+         
             /*
             |--------------------------------------------------------------------------
             | Tenants
             |--------------------------------------------------------------------------
             */
-             // 1. RUTAS ESTÁTICAS PRIMERO (sin parámetros dinámicos)
+          
             Route::get('tenants/listado/{status?}', [TenantController::class, 'index'])
                 ->name('tenants.index');
 
             Route::get('tenants/create', [TenantController::class, 'create'])
-                ->name('tenants.create');
-
-         
-            // 3. RUTAS CON {tenant} - ESPECÍFICAS ANTES QUE GENERALES
+                ->name('tenants.create');         
+        
             Route::get('tenants/{tenant}/edit', [TenantController::class, 'edit'])
                 ->name('tenants.edit');  
           
-            // 4. RUTAS GENERALES CON {tenant} (al final)
             Route::get('tenants/{tenant}', [TenantController::class, 'show'])
                 ->name('tenants.show');            
 
@@ -65,47 +61,47 @@ use Illuminate\Support\Facades\Route;
              Route::get('errors', [ErrorController::class, 'index'])->name('errors.index');
              Route::get('errors/{errorLog}', [ErrorController::class, 'show'])->name('errors.show');
 
+
             /*
-        |--------------------------------------------------------------------------
-        | Roles
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Roles
+            |--------------------------------------------------------------------------
+            */
 
-        Route::get('roles', [RoleController::class, 'index'])
-            ->name('roles.index');
+            Route::get('roles', [RoleController::class, 'index'])
+                ->name('roles.index');
 
-        Route::get('roles/create', [RoleController::class, 'create'])
-            ->name('roles.create');
+            Route::get('roles/create', [RoleController::class, 'create'])
+                ->name('roles.create');
 
-        Route::get('roles/{role}/edit', [RoleController::class, 'edit'])
-            ->name('roles.edit');
+            Route::get('roles/{role}/edit', [RoleController::class, 'edit'])
+                ->name('roles.edit');
+            
+            Route::put('roles/{role}', [RoleController::class, 'update'])
+                ->name('roles.update');
+            
+            Route::get('roles/{role}', [RoleController::class, 'show'])
+                ->name('roles.show');        
+
         
-        Route::put('roles/{role}', [RoleController::class, 'update'])
-            ->name('roles.update');
-        
-        Route::get('roles/{role}', [RoleController::class, 'show'])
-            ->name('roles.show');
-        
 
-        
+            /*
+            |--------------------------------------------------------------------------
+            | Permissions
+            |--------------------------------------------------------------------------
+            */
 
-        /*
-        |--------------------------------------------------------------------------
-        | Permissions
-        |--------------------------------------------------------------------------
-        */
+            Route::get('permissions', [PermissionController::class, 'index'])
+                ->name('permissions.index');
 
-        Route::get('permissions', [PermissionController::class, 'index'])
-            ->name('permissions.index');
+            Route::get('permissions/create', [PermissionController::class, 'create'])
+                ->name('permissions.create');
 
-        Route::get('permissions/create', [PermissionController::class, 'create'])
-            ->name('permissions.create');
+            Route::get('permissions/{permission}/edit', [PermissionController::class, 'edit'])
+                ->name('permissions.edit');
 
-        Route::get('permissions/{permission}/edit', [PermissionController::class, 'edit'])
-            ->name('permissions.edit');
-
-        Route::get('permissions/{permission}', [PermissionController::class, 'show'])
-            ->name('permissions.show');
+            Route::get('permissions/{permission}', [PermissionController::class, 'show'])
+                ->name('permissions.show');
 
              
 
