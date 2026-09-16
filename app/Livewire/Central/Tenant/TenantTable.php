@@ -230,7 +230,7 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => 'active']
+                ['status' => 'suspend']
             );
         } catch (Throwable $exception) {
             $errorLogger->report($exception, [
@@ -246,7 +246,7 @@ final class TenantTable extends PowerGridComponent
 
             $this->redirectRoute(
                 'central.tenants.index',
-                ['status' => 'active']
+                ['status' => 'suspend']
             );
         }
     }
@@ -287,7 +287,7 @@ final class TenantTable extends PowerGridComponent
                         'confirmEvent' => 'tenant-destroy-confirmed',
                         'title' => 'Eliminar Inquilino',
                         'message' => '¿Está seguro de que desea eliminar definitivamente este inquilino?',
-                        'warning' => 'Esta accion no puede se reversada',
+                        'warning' => 'Esta accion no puede se revertir',
                     ]
                 );
         } else {
