@@ -1,0 +1,12 @@
+interface:
+  display_name: "ssr livewire powergrid"
+  short_description: "Componentes Livewire y tablas PowerGrid de SSR"
+  icon_small: "assets/icon.svg"
+  icon_large: "assets/icon.svg"
+policy:
+  products:
+    - "chatgpt"
+    - "codex"
+    - "api"
+    - "atlas"
+  allow_implicit_invocation: true

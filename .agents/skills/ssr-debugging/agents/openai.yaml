@@ -1,0 +1,12 @@
+interface:
+  display_name: "ssr debugging"
+  short_description: "Diagnóstico de errores de SSR con evidencia"
+  icon_small: "assets/icon.svg"
+  icon_large: "assets/icon.svg"
+policy:
+  products:
+    - "chatgpt"
+    - "codex"
+    - "api"
+    - "atlas"
+  allow_implicit_invocation: true

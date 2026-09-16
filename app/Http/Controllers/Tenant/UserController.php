@@ -19,6 +19,11 @@ class UserController extends Controller
     {
         return view('tenant.users.create',['title'=>'Crear Usuario']);
     }
+
+    public function show()
+    {
+        return view('tenant.users.shos',['title'=>'Mostrar Usuario']);
+    }
   
     public function edit(User $user)
     

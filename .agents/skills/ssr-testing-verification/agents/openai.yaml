@@ -1,0 +1,12 @@
+interface:
+  display_name: "ssr testing verification"
+  short_description: "Pruebas focalizadas y verificación segura de SSR"
+  icon_small: "assets/icon.svg"
+  icon_large: "assets/icon.svg"
+policy:
+  products:
+    - "chatgpt"
+    - "codex"
+    - "api"
+    - "atlas"
+  allow_implicit_invocation: true
