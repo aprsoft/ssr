@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Central\ErrorLogger;
+namespace App\Services\Central\ErrorLog;
 
 use App\Models\Central\ErrorLog;
 use Illuminate\Support\Facades\Log;
