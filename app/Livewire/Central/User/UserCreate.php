@@ -14,7 +14,6 @@ use Throwable;
 class UserCreate extends Component
 {
     public string $name = '';
-
     public string $email = '';
 
     protected function rules(): array
@@ -39,7 +38,6 @@ class UserCreate extends Component
     protected array $messages = [
         'name.required' => 'Debes ingresar el nombre del usuario.',
         'name.max' => 'El nombre no puede superar los 255 caracteres.',
-
         'email.required' => 'Debes ingresar el correo electrónico.',
         'email.email' => 'El correo electrónico ingresado no es válido.',
         'email.max' => 'El correo electrónico no puede superar los 40 caracteres.',

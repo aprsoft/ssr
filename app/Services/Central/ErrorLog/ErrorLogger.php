@@ -2,7 +2,7 @@
 
 namespace App\Services\Error;
 
-use App\Models\Central\ErrorLog;
+use App\Models\ErrorLog;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 

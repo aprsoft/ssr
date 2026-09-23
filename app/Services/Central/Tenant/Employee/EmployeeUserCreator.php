@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Central\Employee;
+namespace App\Services\Tenant\Employee;
 
-use App\Models\Central\Employee;
-use App\Models\Central\User;
+use App\Models\Tenant\Employee;
+use App\Models\Tenant\User;
 use App\Services\Error\ErrorLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use RuntimeException;
 use Throwable;
 
 final class EmployeeUserCreator
@@ -21,40 +20,41 @@ final class EmployeeUserCreator
 
     public function create(
         array $employeeData,
-        ?string $email = null
+        ?string $email = null,
+        ?string $plainPassword = null,
+        bool $isActive = false,
+        bool $emailVerified = false,
     ): Employee {
-        $connection = config('tenancy.database.central_connection');
-
-        if (! is_string($connection) || $connection === '') {
-            throw new RuntimeException(
-                'La conexión central no está configurada.'
-            );
-        }
-
         try {
             $email = $this->normalizeEmail($email);
 
-            return DB::connection($connection)->transaction(
+            return DB::connection('tenant')->transaction(
                 function () use (
-                    $connection,
                     $employeeData,
-                    $email
+                    $email,
+                    $plainPassword,
+                    $isActive,
+                    $emailVerified,
                 ): Employee {
                     $user = new User();
 
-                    $user->setConnection($connection);
+                    $user->setConnection('tenant');
 
                     $user->fill([
                         'email' => $email,
-                        'password' => Str::random(64),
-                        'is_active' => false,
+                        'password' => $plainPassword ?? Str::random(64),
+                        'is_active' => $isActive,
                     ]);
+
+                    if ($emailVerified && $email !== null) {
+                        $user->email_verified_at = now();
+                    }
 
                     $user->save();
 
                     $employee = new Employee();
 
-                    $employee->setConnection($connection);
+                    $employee->setConnection('tenant');
 
                     $employee->fill($employeeData);
                     $employee->user_id = $user->id;
@@ -62,13 +62,15 @@ final class EmployeeUserCreator
                     $employee->save();
 
                     $employee->setRelation('user', $user);
+                    $user->setRelation('employee', $employee);
 
                     return $employee;
                 }
             );
         } catch (Throwable $exception) {
             $this->errorLogger->report($exception, [
-                'operation' => 'central.employee.create',
+                'operation' => 'tenant.employee.create',
+                'tenant_id' => tenant()?->getTenantKey(),
                 'employee' => $this->safeEmployeeContext($employeeData),
                 'email' => $email,
             ]);

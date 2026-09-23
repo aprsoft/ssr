@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Central;
-use App\Http\Controllers\Central\Controller; 
 
+use App\Http\Controllers\Central\Controller;
 use App\Models\Central\ErrorLog;
 
 class ErrorController extends Controller
