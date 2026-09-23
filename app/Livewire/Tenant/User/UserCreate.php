@@ -4,7 +4,7 @@ namespace App\Livewire\Tenant\User;
 
 use App\Events\Tenant\UserCreated;
 use App\Models\Tenant\User;
-use App\Services\Error\ErrorLogger;
+use App\Services\ErrorLog\ErrorLogger;
 use App\Services\Tenant\EmployeeUserCreator;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
@@ -16,7 +16,6 @@ use Throwable;
 class UserCreate extends Component
 {
     public string $name = '';
-
     public string $email = '';
 
     protected function rules(): array
@@ -41,7 +40,6 @@ class UserCreate extends Component
     protected array $messages = [
         'name.required' => 'Debes ingresar el nombre del usuario.',
         'name.max' => 'El nombre no puede superar los 255 caracteres.',
-
         'email.required' => 'Debes ingresar el correo electrónico.',
         'email.email' => 'El correo electrónico ingresado no es válido.',
         'email.max' => 'El correo electrónico no puede superar los 40 caracteres.',

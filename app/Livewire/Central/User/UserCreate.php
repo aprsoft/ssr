@@ -4,7 +4,7 @@ namespace App\Livewire\Central\User;
 
 use App\Events\Central\UserCreated;
 use App\Models\Central\User;
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
@@ -65,7 +65,8 @@ class UserCreate extends Component
              *
              * Un usuario nuevo se crea activo.
              */
-            $user->state = 'VIGENTE';
+
+            // $user->state = 'VIGENTE';
 
             $user->email_verified_at = now();
 

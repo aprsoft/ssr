@@ -3,19 +3,20 @@
 namespace App\Livewire\Central\Tenant;
 
 use App\Models\Central\Tenant;
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use App\Services\Central\Tenant\UpdateTenantService;
-use DomainException;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Livewire\Component;
 use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Exceptions\DomainOccupiedByOtherTenantException;
 use Throwable;
+use DomainException;
+use Livewire\Component;
 
 class EditTenant extends Component
 {
+   
     public string $tenantId = '';
 
     public ?int $domainId = null;
@@ -23,7 +24,7 @@ class EditTenant extends Component
     public string $domain = '';
 
     public function mount(string $tenantId): void
-    {
+    { 
         $tenant = Tenant::query()
             ->with('domains')
             ->findOrFail($tenantId);
@@ -38,7 +39,7 @@ class EditTenant extends Component
     public function update(
         UpdateTenantService $updateTenant,
         ErrorLogger $errorLogger
-    ) {
+    ) {dd(8);
         try {
             $this->domain = trim($this->domain);
 

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Central\Tenant;
 
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use App\Services\Central\Tenant\CreateTenantService;
 use DomainException;
 use Illuminate\Database\QueryException;
