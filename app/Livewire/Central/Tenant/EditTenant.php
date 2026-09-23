@@ -39,7 +39,7 @@ class EditTenant extends Component
     public function update(
         UpdateTenantService $updateTenant,
         ErrorLogger $errorLogger
-    ) {dd(8);
+    ) {
         try {
             $this->domain = trim($this->domain);
 

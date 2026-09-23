@@ -38,6 +38,7 @@ class TenantLifecycleService
     public function destroy(string $tenantId): void
     {
         $tenant = Tenant::onlyTrashed()->find($tenantId);
+  
 
         if (! $tenant) {
             throw new DomainException(
