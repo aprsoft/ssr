@@ -6,7 +6,7 @@ use App\Models\Central\ErrorLog;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class ErrorLog
+class Error
 {
     /**
      * Registra una excepción en el log de Laravel y,
