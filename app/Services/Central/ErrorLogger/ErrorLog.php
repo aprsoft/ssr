@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Error;
+namespace App\Services\Central\ErrorLogger;
 
-use App\Models\ErrorLog;
+use App\Models\Central\ErrorLog;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class ErrorLogger
+class ErrorLog
 {
     /**
      * Registra una excepción en el log de Laravel y,
