@@ -6,7 +6,7 @@ namespace App\Services\Tenant;
 
 use App\Models\Tenant\Employee;
 use App\Models\Tenant\User;
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;

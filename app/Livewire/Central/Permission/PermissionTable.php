@@ -12,7 +12,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use Spatie\Permission\Models\Permission;
 use App\Services\Permission\DeletePermissionService;
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Database\QueryException;
 use DomainException;
 use Throwable;

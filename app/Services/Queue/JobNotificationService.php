@@ -4,7 +4,7 @@ namespace App\Services\Queue;
 
 use App\Events\JobNotification;
 use App\Jobs\SendEmailJob;
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use Throwable;
 
 class JobNotificationService

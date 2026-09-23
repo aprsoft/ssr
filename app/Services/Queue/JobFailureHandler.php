@@ -2,7 +2,7 @@
 
 namespace App\Services\Queue;
 
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Queue\Events\JobFailed;
 
 class JobFailureHandler

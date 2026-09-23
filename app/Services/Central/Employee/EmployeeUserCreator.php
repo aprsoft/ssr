@@ -6,7 +6,7 @@ namespace App\Services\Central\Employee;
 
 use App\Models\Central\Employee;
 use App\Models\Central\User;
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RuntimeException;

@@ -7,6 +7,7 @@ use App\Http\Controllers\Tenant\ErrorController;
 use App\Http\Controllers\Tenant\PermissionController;
 use App\Http\Controllers\Tenant\RoleController;
 use App\Http\Controllers\Tenant\UserController;
+use App\Http\Controllers\Tenant\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
         Route::get('/', function () {
@@ -43,19 +44,26 @@ use Illuminate\Support\Facades\Route;
             ->name('users.show');
 
         Route::get('users/{user}/edit', [UserController::class, 'edit'])
-            ->name('users.edit');      
-
+            ->name('users.edit');   
+            
+            
         /*
         |--------------------------------------------------------------------------
-        | Error_log
+        | Employees
         |--------------------------------------------------------------------------
         */
 
-            Route::get('errors', [ErrorController::class, 'index'])->name('errors.index');
-            Route::get('errors/{errorLog}', [ErrorController::class, 'show'])->name('errors.show');
+        Route::get('employees', [EmployeeController::class, 'index'])
+            ->name('employees.index');
 
-        
-    
+        Route::get('employees/create', [EmployeeController::class, 'create'])
+            ->name('employees.create');       
+
+        Route::get('employees/{employee}', [EmployeeController::class, 'show'])
+            ->name('employees.show');
+
+        Route::get('employees/{employee}/edit', [EmployeeController::class, 'edit'])
+            ->name('employees.edit');        
 
         /*
         |--------------------------------------------------------------------------

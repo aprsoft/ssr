@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Central\Permission;
 
-use App\Services\Error\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use App\Services\Permission\UpdatePermissionService;
 use DomainException;
 use Illuminate\Database\QueryException;
