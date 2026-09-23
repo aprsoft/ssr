@@ -8,9 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('error_logs', function (Blueprint $table) {
-            $table->id(); 
-            // $table->enum('type', ['ERROR', 'WARNING', 'INFO', 'CATCH']);
-            $table->unsignedInteger('document_id')->nullable();
+            $table->id();            
             $table->text('message')->nullable();
             $table->text('exception')->nullable();
             $table->text('file')->nullable();
