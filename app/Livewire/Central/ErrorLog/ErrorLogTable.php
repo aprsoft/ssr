@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Livewire\Central\Error;
+namespace App\Livewire\Central\ErrorLog;
 
-use App\Models\Central\ErrorLog;
+
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use Illuminate\Support\Str;
+use App\Models\Central\ErrorLog;
 
 final class ErrorLogTable extends PowerGridComponent
 {

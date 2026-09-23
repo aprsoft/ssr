@@ -12,7 +12,7 @@ class UserController extends Controller
         return view('central.users.index',['title'=>'Usuarios']);
     }
 
-     public function show(User $user)
+    public function show(User $user)
     {
         return view('central.users.show',['title'=>'Mostrar Usuario','user'=> $user]);
     }
