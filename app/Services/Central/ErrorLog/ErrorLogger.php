@@ -19,6 +19,8 @@ class ErrorLogger
      */
     public function report(Throwable $exception, array $context = []): void
     {
+
+    
         /*
          * Si existe un tenant inicializado, registramos automáticamente
          * su identificador. De esta forma los callers no necesitan

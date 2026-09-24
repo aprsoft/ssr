@@ -146,10 +146,10 @@ class EmployeeCreate extends Component
         } catch (Throwable $exception) {
             session()->flash(
                 'error',
-                'Ocurrió un error al crear el empleado.'
+                'Ocurrió un error al crear el empleado, contacte al administrador del sistema.'
             );
 
-            return;
+            return redirect()->route('tenant.employees.index');
         }
 
         if ($employee->user->is_active) {

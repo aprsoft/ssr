@@ -38,7 +38,7 @@ class MenuHelper
         ];
     }
 
-      public static function getRolesPermissionsItems(): array
+    public static function getRolesPermissionsItems(): array
     {
         return [
          

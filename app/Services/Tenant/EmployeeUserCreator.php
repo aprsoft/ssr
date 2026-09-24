@@ -28,8 +28,6 @@ final class EmployeeUserCreator
     ): Employee {
         try {
 
-
-
             throw new \RuntimeException(
             'PRUEBA CONTROLADA: error al crear empleado.'
             );
@@ -95,7 +93,7 @@ final class EmployeeUserCreator
         } catch (Throwable $exception) {
             $this->errorLogger->report($exception, [
                 'operation' => 'tenant.employee.create',
-                'tenant_id' => tenant()?->getTenantKey(),
+                // 'tenant_id' => tenant()?->getTenantKey(),
                 'employee' => $this->safeEmployeeContext($employeeData),
                 'email' => $email,
                 'is_active' => $isActive,

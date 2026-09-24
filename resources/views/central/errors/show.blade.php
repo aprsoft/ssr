@@ -50,14 +50,14 @@
                         </p>
                     </div>
 
-                    {{-- Documento --}}
+                    {{-- Inquilino --}}
                     <div>
                         <p class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                            Documento
+                            Inquilino   
                         </p>
 
                         <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {{ $errorLog->document_id ?? '-' }}
+                            {{ $errorLog->tenant_id ?? '-' }}
                         </p>
                     </div>
 

@@ -52,8 +52,16 @@ class MenuHelper
                         'pro' => false
                     ],
                 ],
-            ],
-             [
+            ],        
+           
+        ];
+    }
+
+    public static function getRolesPermissionsItems(): array
+    {
+        return [
+         
+            [
                 'icon' => 'access',
                 'name' => 'Roles',
                 'subItems' => [
@@ -88,27 +96,11 @@ class MenuHelper
                 ],
             ]
         ];
-    }
+    }    
 
     public static function getSupportItems(): array
     {
-        return [
-            // [
-            //     'icon' => 'users',
-            //     'name' => 'Usuarios',
-            //     'subItems' => [
-            //         [
-            //             'name' => 'Listado',
-            //             'path' => route('central.users.index', absolute: false),
-            //             'pro' => false
-            //         ],
-            //         [
-            //             'name' => 'Crear Usuario',
-            //             'path' => route('central.users.create', absolute: false),
-            //             'pro' => false
-            //         ],
-            //     ],
-            // ],
+        return [            
             [
                 'icon' => 'support',
                 'name' => 'Errores',
@@ -119,8 +111,7 @@ class MenuHelper
     }
 
     public static function getMenuGroups(): array
-    {
-        
+    {        
         return [
             [
                 'title' => 'Menu',
@@ -129,6 +120,10 @@ class MenuHelper
             [
                 'title' => 'Administration',
                 'items' => self::getAdministrationItems()
+            ],
+            [
+                'title' => 'Roles y Permisos',
+                'items' => self::getRolesPermissionsItems()
             ],
             [
                 'title' => 'Soporte',
