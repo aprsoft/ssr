@@ -70,7 +70,7 @@ class CreateRole extends Component
 
         session()->flash('success', 'Rol creado correctamente.');
 
-        return redirect()->route('central.roles.index');
+        return redirect()->route('tenant.roles.index');
     }
 
     public function render()
@@ -90,7 +90,7 @@ class CreateRole extends Component
             )
             ->values();
 
-        return view('livewire.central.role.create-role', [
+        return view('livewire.tenant.role.create-role', [
             'permissions' => $permissions,
             'selectedPermissions' => $selectedPermissions,
         ]);
