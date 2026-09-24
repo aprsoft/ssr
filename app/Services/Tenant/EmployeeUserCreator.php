@@ -27,6 +27,13 @@ final class EmployeeUserCreator
         array $roleIds = [],
     ): Employee {
         try {
+
+
+
+            throw new \RuntimeException(
+            'PRUEBA CONTROLADA: error al crear empleado.'
+            );
+
             $email = Str::lower(trim($email));
 
             return DB::connection('tenant')->transaction(
