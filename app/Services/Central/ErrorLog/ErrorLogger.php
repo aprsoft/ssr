@@ -27,9 +27,9 @@ class ErrorLogger
         $tenantId = tenant()?->getTenantKey();
 
 
-        if ($tenantId !== null) {
-            $context['tenant_id'] = $tenantId;
-        }
+        // if ($tenantId !== null) {
+        //     $context['tenant_id'] = $tenantId;
+        // }
 
         /*
          * Laravel log.
