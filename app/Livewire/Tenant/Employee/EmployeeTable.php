@@ -42,7 +42,7 @@ final class EmployeeTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('name')
+            ->add('nombres')
             ->add('apellido_paterno')
             ->add('apellido_materno')
             ->add('email')
@@ -54,7 +54,7 @@ final class EmployeeTable extends PowerGridComponent
         return [
             Column::make('Id', 'id'),
 
-            Column::make('Nombre', 'name')
+            Column::make('Nombre', 'nombres')
                 ->sortable()
                 ->searchable(),          
 
@@ -75,7 +75,7 @@ final class EmployeeTable extends PowerGridComponent
     }
    
 
-    public function actions(User $row): array
+    public function actions(Employee $row): array
     {
         return [           
 

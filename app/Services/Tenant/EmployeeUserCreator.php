@@ -9,6 +9,7 @@ use App\Models\Tenant\User;
 use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use Throwable;
 
 final class EmployeeUserCreator
@@ -20,15 +21,21 @@ final class EmployeeUserCreator
 
     public function create(
         array $employeeData,
-        ?string $email = null
+        string $email,
+        string $plainPassword,
+        bool $isActive,
+        array $roleIds = [],
     ): Employee {
         try {
-            $email = $this->normalizeEmail($email);
+            $email = Str::lower(trim($email));
 
             return DB::connection('tenant')->transaction(
                 function () use (
                     $employeeData,
-                    $email
+                    $email,
+                    $plainPassword,
+                    $isActive,
+                    $roleIds,
                 ): Employee {
                     $user = new User();
 
@@ -36,8 +43,8 @@ final class EmployeeUserCreator
 
                     $user->fill([
                         'email' => $email,
-                        'password' => Str::random(64),
-                        'is_active' => false,
+                        'password' => $plainPassword,
+                        'is_active' => $isActive,
                     ]);
 
                     $user->save();
@@ -45,11 +52,33 @@ final class EmployeeUserCreator
                     $employee = new Employee();
 
                     $employee->setConnection('tenant');
-
                     $employee->fill($employeeData);
                     $employee->user_id = $user->id;
 
                     $employee->save();
+
+                    if ($isActive) {
+                        $roles = Role::query()
+                            ->where('guard_name', 'tenant')
+                            ->where('name', '!=', 'inactive')
+                            ->whereIn('id', $roleIds)
+                            ->get();
+
+                        if ($roles->count() !== count($roleIds)) {
+                            throw new \InvalidArgumentException(
+                                'Uno o más roles seleccionados no son válidos.'
+                            );
+                        }
+
+                        $user->syncRoles($roles);
+                    } else {
+                        $inactiveRole = Role::query()
+                            ->where('guard_name', 'tenant')
+                            ->where('name', 'inactive')
+                            ->firstOrFail();
+
+                        $user->syncRoles([$inactiveRole]);
+                    }
 
                     $employee->setRelation('user', $user);
 
@@ -62,28 +91,18 @@ final class EmployeeUserCreator
                 'tenant_id' => tenant()?->getTenantKey(),
                 'employee' => $this->safeEmployeeContext($employeeData),
                 'email' => $email,
+                'is_active' => $isActive,
             ]);
 
             throw $exception;
         }
     }
 
-    private function normalizeEmail(?string $email): ?string
-    {
-        if ($email === null) {
-            return null;
-        }
-
-        $email = Str::lower(trim($email));
-
-        return $email !== '' ? $email : null;
-    }
-
     private function safeEmployeeContext(array $employeeData): array
     {
         return [
             'rut' => $employeeData['rut'] ?? null,
-            'name' => $employeeData['name'] ?? null,
+            'nombres' => $employeeData['nombres'] ?? null,
             'state' => $employeeData['state'] ?? null,
         ];
     }

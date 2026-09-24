@@ -1,30 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tenant\Employee;
 
 use App\Events\Tenant\UserCreated;
 use App\Models\Tenant\User;
-use App\Services\ErrorLog\ErrorLogger;
+use App\Services\Central\ErrorLog\ErrorLogger;
 use App\Services\Tenant\EmployeeUserCreator;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 use Throwable;
 
 class EmployeeCreate extends Component
 {
+    public string $rut = '';
+
     public string $nombres = '';
+
     public string $apellido_paterno = '';
+
     public string $apellido_materno = '';
+
+    public string $movil = '';
+
     public string $email = '';
+
+    public bool $is_active = true;
+
+    public array $roleIds = [];
 
     protected function rules(): array
     {
         return [
+            'rut' => [
+                'nullable',
+                'string',
+                'max:10',
+            ],
+
             'nombres' => [
                 'required',
+                'string',
+                'max:255',
+            ],
+
+            'apellido_paterno' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'apellido_materno' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'movil' => [
+                'nullable',
                 'string',
                 'max:255',
             ],
@@ -32,112 +68,146 @@ class EmployeeCreate extends Component
             'email' => [
                 'required',
                 'string',
-                'email:dns',
-                'max:40',
+                'email',
+                'max:255',
                 Rule::unique(User::class, 'email'),
+            ],
+
+            'is_active' => [
+                'boolean',
+            ],
+
+            'roleIds' => [
+                Rule::requiredIf($this->is_active),
+                'array',
+            ],
+
+            'roleIds.*' => [
+                'integer',
             ],
         ];
     }
 
     protected array $messages = [
-        'nombres.required' => 'Debes ingresar el nombre.',
-        'nombres.max' => 'El nombre no puede superar los 255 caracteres.',
+        'nombres.required' => 'Debes ingresar los nombres.',
         'email.required' => 'Debes ingresar el correo electrónico.',
         'email.email' => 'El correo electrónico ingresado no es válido.',
-        'email.max' => 'El correo electrónico no puede superar los 40 caracteres.',
-        'email.unique' => 'El correo electrónico ingresado ya está registrado.',
+        'email.unique' => 'El correo electrónico ya está registrado.',
+        'roleIds.required' => 'Debes seleccionar al menos un rol.',
     ];
+
+    public function updatedIsActive(bool $isActive): void
+    {
+        if (! $isActive) {
+            $this->roleIds = [];
+        }
+    }
+
+    public function removeRole(int $roleId): void
+    {
+        $this->roleIds = array_values(
+            array_filter(
+                $this->roleIds,
+                fn ($id) => (int) $id !== $roleId
+            )
+        );
+    }
 
     public function save(
         EmployeeUserCreator $employeeUserCreator,
         ErrorLogger $errorLogger,
     ) {
+        $this->rut = trim($this->rut);
+        $this->nombres = trim($this->nombres);
+        $this->apellido_paterno = trim($this->apellido_paterno);
+        $this->apellido_materno = trim($this->apellido_materno);
+        $this->movil = trim($this->movil);
+        $this->email = Str::lower(trim($this->email));
+
+        $validated = $this->validate();
+
+        $plainPassword = Str::random(8);
+
         try {
-            $this->name = trim($this->name);
-            $this->email = Str::lower(trim($this->email));
-
-            $validated = $this->validate();
-
-            $plainPassword = Str::random(6);
-
             $employee = $employeeUserCreator->create(
                 employeeData: [
-                    'name' => $validated['name'],
+                    'rut' => $validated['rut'] ?: null,
+                    'nombres' => $validated['nombres'],
+                    'apellido_paterno' => $validated['apellido_paterno'] ?: null,
+                    'apellido_materno' => $validated['apellido_materno'] ?: null,
+                    'movil' => $validated['movil'] ?: null,
                     'state' => 'VIGENTE',
                 ],
                 email: $validated['email'],
                 plainPassword: $plainPassword,
-                isActive: true,
-                emailVerified: true,
+                isActive: $validated['is_active'],
+                roleIds: $validated['roleIds'],
             );
-
-            $user = $employee->user;
-        } catch (ValidationException $exception) {
-            $errorLogger->report($exception, [
-                'operation' => 'tenant.user.create',
-                'tenant_id' => tenant()?->getTenantKey(),
-                'error_type' => 'validation',
-                'validation_errors' => $exception->errors(),
-            ]);
-
-            throw $exception;
-        } catch (QueryException $exception) {
-            session()->flash(
-                'error',
-                'Ocurrió un error de base de datos al crear el usuario.'
-            );
-
-            return redirect()->route('tenant.users.create');
         } catch (Throwable $exception) {
             session()->flash(
                 'error',
-                'Ocurrió un error inesperado al crear el usuario.'
+                'Ocurrió un error al crear el empleado.'
             );
 
-            return redirect()->route('tenant.users.create');
+            return;
         }
 
-        try {
-            event(
-                new UserCreated(
-                    $user,
-                    $plainPassword
-                )
-            );
-        } catch (Throwable $exception) {
-            $errorLogger->report($exception, [
-                'operation' => 'tenant.user.created.notification',
-                'tenant_id' => tenant()?->getTenantKey(),
-                'user_id' => $user->id,
-                'error_type' => 'notification',
-            ]);
+        if ($employee->user->is_active) {
+            try {
+                event(
+                    new UserCreated(
+                        $employee->user,
+                        $plainPassword
+                    )
+                );
+            } catch (Throwable $exception) {
+                $errorLogger->report($exception, [
+                    'operation' => 'tenant.user.created.notification',
+                    'tenant_id' => tenant()?->getTenantKey(),
+                    'user_id' => $employee->user->id,
+                ]);
 
-            session()->flash(
-                'error',
-                sprintf(
-                    'El usuario "%s" fue creado correctamente, pero ocurrió un error al procesar su notificación.',
-                    $employee->name
-                )
-            );
+                session()->flash(
+                    'error',
+                    'El empleado fue creado correctamente, pero no fue posible procesar la notificación.'
+                );
 
-            return redirect()->route('tenant.users.index');
+                return redirect()->route('tenant.employees.index');
+            }
         }
 
         session()->flash(
             'success',
-            sprintf(
-                'El usuario "%s" fue creado correctamente.',
-                $employee->name
-            )
+            'Empleado creado correctamente.'
         );
 
-        return redirect()->route('tenant.users.index');
+        return redirect()->route('tenant.employees.index');
     }
 
     public function render()
     {
+        $roles = Role::query()
+            ->where('guard_name', 'tenant')
+            ->where('name', '!=', 'inactive')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $selectedRoles = $roles
+            ->filter(
+                fn (Role $role) => in_array(
+                    (int) $role->id,
+                    array_map('intval', $this->roleIds),
+                    true
+                )
+            )
+            ->values();
+
         return view(
-            'livewire.tenant.employee.employee-create'
+            'livewire.tenant.employee.employee-create',
+            [
+                'roles' => $roles,
+                'selectedRoles' => $selectedRoles,
+            ]
         );
     }
 }
