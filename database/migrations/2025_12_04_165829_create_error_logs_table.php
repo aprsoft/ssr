@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('error_logs', function (Blueprint $table) {
             $table->id();     
-            $table->tenant_id()->nullable();        
+            $table->unsignedInteger('tenant_id')->nullable();        
             $table->text('message')->nullable();
             $table->text('exception')->nullable();
             $table->text('file')->nullable();

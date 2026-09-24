@@ -18,7 +18,7 @@ return new class extends Migration
                 ->constrained('users');
 
             $table->string('rut', 10)->nullable();
-            $table->string('name');
+            $table->string('nombres');
             $table->string('apellido_paterno')->nullable();
             $table->string('apellido_materno')->nullable();
             $table->string('movil')->nullable();

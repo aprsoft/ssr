@@ -2,9 +2,9 @@
     
     <x-input 
         label="Nombre" 
-        wire:model.live="name" 
+        wire:model.live="nombres" 
         :disabled="$saving"
-    />
+    />    
 
     <x-input 
         label="Email" 

@@ -15,13 +15,15 @@ use Throwable;
 
 class EmployeeCreate extends Component
 {
-    public string $name = '';
+    public string $nombres = '';
+    public string $apellido_paterno = '';
+    public string $apellido_materno = '';
     public string $email = '';
 
     protected function rules(): array
     {
         return [
-            'name' => [
+            'nombres' => [
                 'required',
                 'string',
                 'max:255',
@@ -38,8 +40,8 @@ class EmployeeCreate extends Component
     }
 
     protected array $messages = [
-        'name.required' => 'Debes ingresar el nombre del usuario.',
-        'name.max' => 'El nombre no puede superar los 255 caracteres.',
+        'nombres.required' => 'Debes ingresar el nombre.',
+        'nombres.max' => 'El nombre no puede superar los 255 caracteres.',
         'email.required' => 'Debes ingresar el correo electrónico.',
         'email.email' => 'El correo electrónico ingresado no es válido.',
         'email.max' => 'El correo electrónico no puede superar los 40 caracteres.',
