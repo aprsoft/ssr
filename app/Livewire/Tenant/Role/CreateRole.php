@@ -25,7 +25,7 @@ class CreateRole extends Component
                     config('permission.table_names.roles'),
                     'name'
                 )->where(
-                    fn ($query) => $query->where('guard_name', 'web')
+                    fn ($query) => $query->where('guard_name', 'tenant')
                 ),
             ],
 
@@ -46,7 +46,7 @@ class CreateRole extends Component
         ]);
 
         $permissions = Permission::query()
-            ->where('guard_name', 'web')
+            ->where('guard_name', 'tenant')
             ->whereIn('id', $validated['permissionIds'])
             ->get();
 
@@ -62,7 +62,7 @@ class CreateRole extends Component
         DB::transaction(function () use ($validated, $permissions): void {
             $role = Role::create([
                 'name' => trim($validated['role']),
-                'guard_name' => 'web',
+                'guard_name' => 'tenant',
             ]);
 
             $role->syncPermissions($permissions);
@@ -76,7 +76,7 @@ class CreateRole extends Component
     public function render()
     {
         $permissions = Permission::query()
-            ->where('guard_name', 'web')
+            ->where('guard_name', 'tenant')
             ->orderBy('name')
             ->get(['id', 'name']);
 
