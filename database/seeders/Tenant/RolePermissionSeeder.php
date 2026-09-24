@@ -23,6 +23,11 @@ class RolePermissionSeeder extends Seeder
             'guard_name' => 'tenant',
         ]);
 
+        $role3 = Role::create([
+            'name' => 'inactive',
+            'guard_name' => 'tenant',
+        ]);
+
         Permission::create([
             'name' => 'tenant.users.index',
             'guard_name' => 'tenant',
