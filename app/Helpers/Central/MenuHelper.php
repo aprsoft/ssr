@@ -15,7 +15,7 @@ class MenuHelper
             [
                 'icon' => 'data-base',
                 'name' => 'Inquilinos',
-                 'subItems' => [
+                'subItems' => [
                     [
                         'name' => 'Listado',
                         'path' => route('central.tenants.index', ['status'=>'active'], absolute: false),

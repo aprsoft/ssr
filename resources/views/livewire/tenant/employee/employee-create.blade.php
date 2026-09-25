@@ -1,9 +1,12 @@
 <x-form wire:submit="save">
 
-    <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
 
-        {{-- Columna izquierda --}}
-        <div class="space-y-6">
+        {{-- Columna izquierda: datos del empleado --}}
+        <div
+            class="space-y-6 rounded-xl border border-gray-200 p-6
+                   dark:border-gray-700"
+        >
 
             <div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -68,7 +71,9 @@
 
                     @if ($selectedRoles->isEmpty())
                         <div
-                            class="rounded-lg border border-dashed border-gray-300 px-4 py-8 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400"
+                            class="rounded-lg border border-dashed border-gray-300
+                                   px-4 py-8 text-center text-sm text-gray-500
+                                   dark:border-gray-700 dark:text-gray-400"
                         >
                             No hay roles asignados.
                         </div>
@@ -76,9 +81,15 @@
                         <div class="flex flex-wrap gap-2">
                             @foreach ($selectedRoles as $role)
                                 <div
-                                    class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                                    class="inline-flex items-center gap-2 rounded-lg
+                                           border border-gray-200 bg-gray-50 px-3 py-2
+                                           text-sm font-medium text-gray-700
+                                           dark:border-gray-700 dark:bg-gray-800
+                                           dark:text-gray-200"
                                 >
-                                    <span>{{ $role->name }}</span>
+                                    <span>
+                                        {{ $role->name }}
+                                    </span>
 
                                     <button
                                         type="button"
@@ -98,8 +109,11 @@
 
         </div>
 
-        {{-- Columna derecha --}}
-        <div class="space-y-6 border-gray-200 lg:border-l lg:pl-12 dark:border-gray-700">
+        {{-- Columna derecha: configuración del usuario --}}
+        <div
+            class="space-y-6 rounded-xl border border-gray-200 p-6
+                   dark:border-gray-700"
+        >
 
             <div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -114,10 +128,11 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 
                 <label
-                    class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition
-                        {{ $is_active
-                            ? 'border-gray-900 bg-gray-50 dark:border-gray-400 dark:bg-gray-800'
-                            : 'border-gray-200 dark:border-gray-700' }}"
+                    class="flex cursor-pointer items-center gap-3 rounded-lg
+                           border p-4 transition
+                           {{ $is_active
+                               ? 'border-gray-900 bg-gray-50 dark:border-gray-400 dark:bg-gray-800'
+                               : 'border-gray-200 dark:border-gray-700' }}"
                 >
                     <input
                         type="radio"
@@ -138,10 +153,11 @@
                 </label>
 
                 <label
-                    class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition
-                        {{ ! $is_active
-                            ? 'border-gray-900 bg-gray-50 dark:border-gray-400 dark:bg-gray-800'
-                            : 'border-gray-200 dark:border-gray-700' }}"
+                    class="flex cursor-pointer items-center gap-3 rounded-lg
+                           border p-4 transition
+                           {{ ! $is_active
+                               ? 'border-gray-900 bg-gray-50 dark:border-gray-400 dark:bg-gray-800'
+                               : 'border-gray-200 dark:border-gray-700' }}"
                 >
                     <input
                         type="radio"
@@ -178,12 +194,16 @@
                     </div>
 
                     <div
-                        class="max-h-80 space-y-2 overflow-y-auto rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+                        class="max-h-80 space-y-2 overflow-y-auto rounded-lg
+                               border border-gray-200 p-3
+                               dark:border-gray-700"
                     >
                         @forelse ($roles as $role)
 
                             <label
-                                class="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                                class="flex cursor-pointer items-center gap-3
+                                       rounded-lg px-3 py-2 transition
+                                       hover:bg-gray-50 dark:hover:bg-gray-800"
                             >
                                 <input
                                     type="checkbox"
@@ -192,14 +212,20 @@
                                     class="h-4 w-4 rounded"
                                 >
 
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                <span
+                                    class="text-sm font-medium text-gray-700
+                                           dark:text-gray-200"
+                                >
                                     {{ $role->name }}
                                 </span>
                             </label>
 
                         @empty
 
-                            <div class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                            <div
+                                class="py-6 text-center text-sm text-gray-500
+                                       dark:text-gray-400"
+                            >
                                 No existen roles disponibles.
                             </div>
 
