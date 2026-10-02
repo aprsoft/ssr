@@ -1,21 +1,23 @@
 <div class="space-y-6">
 
-    <form wire:submit="save" class="space-y-6">
+    <form wire:submit="update" class="space-y-6">
 
+        {{-- Datos principales --}}
         <div
             class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm
                    dark:border-gray-800 dark:bg-white/[0.03]"
         >
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
+                {{-- Nombre del rol --}}
                 <div>
                     <div class="mb-4">
                         <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
-                            Nuevo rol
+                            Editar rol
                         </h3>
 
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Ingresa el nombre que identificará al rol.
+                            Modifica el nombre que identifica al rol.
                         </p>
                     </div>
 
@@ -32,6 +34,7 @@
                     @enderror
                 </div>
 
+                {{-- Permisos seleccionados --}}
                 <div>
                     <div class="mb-4 flex items-center justify-between">
                         <div>
@@ -79,7 +82,7 @@
                                        text-center text-sm text-gray-500
                                        dark:text-gray-400"
                             >
-                                Aún no has seleccionado permisos.
+                                Este rol no tiene permisos seleccionados.
                             </div>
                         @endif
                     </div>
@@ -94,6 +97,7 @@
             </div>
         </div>
 
+        {{-- Tabla de permisos --}}
         <div
             class="overflow-hidden rounded-2xl border border-gray-200
                    bg-white shadow-sm
@@ -109,7 +113,7 @@
                     </h3>
 
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Selecciona los permisos que tendrá este rol.
+                        Marca o desmarca los permisos que tendrá este rol.
                     </p>
                 </div>
 
@@ -124,23 +128,39 @@
 
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+
                     <thead class="bg-gray-50 dark:bg-gray-900/50">
                         <tr>
-                            <th class="w-16 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                            <th
+                                class="w-16 px-5 py-3 text-left text-xs
+                                       font-semibold uppercase tracking-wide
+                                       text-gray-500 dark:text-gray-400"
+                            >
                                 Sel.
                             </th>
 
-                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                            <th
+                                class="px-5 py-3 text-left text-xs
+                                       font-semibold uppercase tracking-wide
+                                       text-gray-500 dark:text-gray-400"
+                            >
                                 Permiso
                             </th>
 
-                            <th class="w-32 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                            <th
+                                class="w-32 px-5 py-3 text-left text-xs
+                                       font-semibold uppercase tracking-wide
+                                       text-gray-500 dark:text-gray-400"
+                            >
                                 Estado
                             </th>
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-gray-100 bg-white dark:divide-gray-800 dark:bg-transparent">
+                    <tbody
+                        class="divide-y divide-gray-100 bg-white
+                               dark:divide-gray-800 dark:bg-transparent"
+                    >
                         @forelse ($permissions as $permission)
 
                             @php
@@ -152,6 +172,7 @@
                             @endphp
 
                             <tr wire:key="permission-row-{{ $permission->id }}">
+
                                 <td class="px-5 py-3">
                                     <input
                                         type="checkbox"
@@ -159,39 +180,63 @@
                                         wire:model.number.live="permissionIds"
                                         class="h-4 w-4 rounded border-gray-300
                                                text-blue-600 focus:ring-blue-500
-                                               dark:border-gray-600 dark:bg-gray-800"
+                                               dark:border-gray-600
+                                               dark:bg-gray-800"
                                     >
                                 </td>
 
-                                <td class="px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <td
+                                    class="px-5 py-3 text-sm font-medium
+                                           text-gray-700 dark:text-gray-300"
+                                >
                                     {{ $permission->name }}
                                 </td>
 
                                 <td class="px-5 py-3">
                                     @if ($isSelected)
-                                        <span class="inline-flex rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                                        <span
+                                            class="inline-flex rounded-full
+                                                   bg-green-50 px-2.5 py-1
+                                                   text-xs font-medium text-green-700
+                                                   dark:bg-green-500/10
+                                                   dark:text-green-400"
+                                        >
                                             Asignado
                                         </span>
                                     @else
-                                        <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                                        <span
+                                            class="inline-flex rounded-full
+                                                   bg-gray-100 px-2.5 py-1
+                                                   text-xs font-medium text-gray-600
+                                                   dark:bg-gray-800
+                                                   dark:text-gray-400"
+                                        >
                                             Disponible
                                         </span>
                                     @endif
                                 </td>
+
                             </tr>
 
                         @empty
                             <tr>
-                                <td colspan="3" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                <td
+                                    colspan="3"
+                                    class="px-5 py-8 text-center
+                                           text-sm text-gray-500
+                                           dark:text-gray-400"
+                                >
                                     No existen permisos disponibles.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
 
+        {{-- Acciones --}}
         <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 
             <a
@@ -209,19 +254,19 @@
             <button
                 type="submit"
                 wire:loading.attr="disabled"
-                wire:target="save"
+                wire:target="update"
                 class="inline-flex items-center justify-center rounded-lg
                        bg-blue-600 px-4 py-2.5
                        text-sm font-medium text-white shadow-sm
                        transition hover:bg-blue-700
                        disabled:cursor-not-allowed disabled:opacity-60"
             >
-                <span wire:loading.remove wire:target="save">
-                    Guardar rol
+                <span wire:loading.remove wire:target="update">
+                    Actualizar rol
                 </span>
 
-                <span wire:loading wire:target="save">
-                    Guardando...
+                <span wire:loading wire:target="update">
+                    Actualizando...
                 </span>
             </button>
 

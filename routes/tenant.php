@@ -8,6 +8,7 @@ use App\Http\Controllers\Tenant\PermissionController;
 use App\Http\Controllers\Tenant\RoleController;
 use App\Http\Controllers\Tenant\UserController;
 use App\Http\Controllers\Tenant\EmployeeController;
+use App\Http\Controllers\Tenant\CustomerController;
 use Illuminate\Support\Facades\Route;
 
         Route::get('/', function () {
@@ -63,7 +64,25 @@ use Illuminate\Support\Facades\Route;
             ->name('employees.show');
 
         Route::get('employees/{employee}/edit', [EmployeeController::class, 'edit'])
-            ->name('employees.edit');        
+            ->name('employees.edit');
+            
+        /*
+        |--------------------------------------------------------------------------
+        | Customers
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('customers', [CustomerController::class, 'index'])
+            ->name('customers.index');
+
+        Route::get('customers/create', [CustomerController::class, 'create'])
+            ->name('customers.create');       
+
+        Route::get('customers/{customer}', [CustomerController::class, 'show'])
+            ->name('customers.show');
+
+        Route::get('customers/{customer}/edit', [CustomerController::class, 'edit'])
+            ->name('customers.edit');    
 
         /*
         |--------------------------------------------------------------------------

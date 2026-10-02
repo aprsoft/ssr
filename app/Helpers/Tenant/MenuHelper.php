@@ -14,6 +14,11 @@ class MenuHelper
                 'name' => 'Inicio',
                 'path' => route('tenant.dashboard', absolute: false),
             ],
+            [
+                'icon' => 'users',
+                'name' => 'Clientes',
+                'path' => route('tenant.customers.index', absolute: false),
+            ],
         ];
     }
 

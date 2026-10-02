@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Livewire\Tenant\Customer;
+
+use App\Models\Tenant\Customer;
+use Illuminate\Database\Eloquent\Builder;
+use PowerComponents\LivewirePowerGrid\Button;
+use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+
+final class CustomerTable extends PowerGridComponent
+{
+    public string $tableName = 'userTable';
+
+    public function setUp(): array
+    {        
+
+        return [
+            PowerGrid::header()
+                ->showSearchInput(),
+            PowerGrid::footer()
+                ->showPerPage()
+                ->showRecordCount(),
+        ];
+    }
+
+    public function datasource(): Builder
+    {
+        return Customer::query();
+    }
+
+    public function relationSearch(): array
+    {
+        return [];
+    }
+
+    public function fields(): PowerGridFields
+    {
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('nombres')
+            ->add('apellido_paterno')
+            ->add('apellido_materno')
+            ->add('email')
+            ->add('created_at');
+    }
+
+    public function columns(): array
+    {
+        return [
+            Column::make('Id', 'id'),
+
+            Column::make('Nombre', 'nombres')
+                ->sortable()
+                ->searchable(),          
+
+            Column::make('A. Paterno', 'apellido_paterno')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('A. Materno', 'apellido_materno')
+                ->sortable()
+                ->searchable(),  
+                
+            Column::make('Email', 'email')
+                ->sortable()
+                ->searchable(), 
+
+            Column::action('Acciones')
+        ];
+    }
+   
+
+    public function actions(Customer $row): array
+    {
+        return [           
+
+             Button::add('edit')
+                ->icon('default-pencil')               
+                ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
+                ->route('tenant.customers.edit', ['customer' => $row->id]),   
+        ];
+    }
+
+    /*
+    public function actionRules($row): array
+    {
+       return [
+            // Hide button edit for ID 1
+            Rule::button('edit')
+                ->when(fn($row) => $row->id === 1)
+                ->hide(),
+        ];
+    }
+    */
+}
