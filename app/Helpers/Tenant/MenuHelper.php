@@ -17,8 +17,20 @@ class MenuHelper
             [
                 'icon' => 'users',
                 'name' => 'Clientes',
-                'path' => route('tenant.customers.index', absolute: false),
-            ],
+                'subItems' => [
+                    [                        
+                        'name' => 'Listado',
+                        'path' => route('tenant.customers.index', absolute: false),
+                        'pro'  => false
+                    ],
+                    [                        
+                        'name' => 'Crear Cliente',
+                        'path' => route('tenant.customers.create', absolute: false),
+                        'pro'  => false
+                    ],
+
+                ],
+            ], 
         ];
     }
 

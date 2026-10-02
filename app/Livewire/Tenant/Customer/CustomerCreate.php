@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire\Tenant\Employee;
+namespace App\Livewire\Tenant\Customer;
 
-use App\Events\Tenant\UserCreated;
-use App\Models\Tenant\User;
+use App\Models\Tenant\Customer;
 use App\Services\Central\ErrorLog\ErrorLogger;
-use App\Services\Tenant\EmployeeUserCreator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -136,7 +134,7 @@ class EmployeeCreate extends Component
     public function render()
     {
         return view(
-            'livewire.tenant.employee.employee-create',
+            'livewire.tenant.customer.customer-create',
             [
                 'roles' => $roles,
                 'selectedRoles' => $selectedRoles,
