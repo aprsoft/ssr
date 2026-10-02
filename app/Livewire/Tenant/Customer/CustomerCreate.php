@@ -12,7 +12,7 @@ use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use Throwable;
 
-class EmployeeCreate extends Component
+class CustomerCreate extends Component
 {
     public string $rut = '';
 
@@ -133,12 +133,6 @@ class EmployeeCreate extends Component
 
     public function render()
     {
-        return view(
-            'livewire.tenant.customer.customer-create',
-            [
-                'roles' => $roles,
-                'selectedRoles' => $selectedRoles,
-            ]
-        );
+        return view('livewire.tenant.customer.customer-create');
     }
 }
