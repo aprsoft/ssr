@@ -39,11 +39,11 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->group(base_path('routes/web.php'));
 
                     
-                // Route::middleware([
-                //     'web',
-                //     InitializeTenancyByDomain::class,
-                //     PreventAccessFromCentralDomains::class,
-                // ])->group(base_path('routes/customer.php'));     
+                Route::middleware([
+                    'web',
+                    InitializeTenancyByDomain::class,
+                    PreventAccessFromCentralDomains::class,
+                ])->group(base_path('routes/customer.php'));     
                 
         }
     )
