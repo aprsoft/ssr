@@ -12,9 +12,9 @@
         <div class="flex items-center gap-3">
             <span class="text-lg font-medium text-gray-900">{{ tenant('name') }}</span>
         </div>
-        <!-- <a href="{{ route('customer.login') }}" class="text-sm font-medium border border-green-700 text-green-700 px-5 py-2 rounded-lg hover:bg-green-50 transition">
+        <a href="{{ route('customer.login') }}" class="text-sm font-medium border border-green-700 text-green-700 px-5 py-2 rounded-lg hover:bg-green-50 transition">
             Ingresar al panel de clientes
-        </a> -->
+        </a>
     </nav>
 
     <section class="flex flex-col items-center justify-center text-center px-6 py-24 gap-6">
