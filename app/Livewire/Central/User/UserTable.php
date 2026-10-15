@@ -77,12 +77,17 @@ final class UserTable extends PowerGridComponent
 
     public function actions(User $row): array
     {
-        return [           
+        return [    
+            
+            Button::add('show') 
+                ->icon('default-eye')               
+                ->class('px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center')
+                ->route('central.users.show', ['user' => $row->id]),   
 
              Button::add('edit')
                 ->icon('default-pencil')               
                 ->class('px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center')
-                ->route('tenant.users.edit', ['user' => $row->id]),   
+                ->route('central.users.edit', ['user' => $row->id]),   
         ];
     }
 
