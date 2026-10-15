@@ -44,8 +44,7 @@ final class EmployeeTable extends PowerGridComponent
             ->add('id')
             ->add('nombres')
             ->add('apellido_paterno')
-            ->add('apellido_materno')
-            ->add('email')
+            ->add('apellido_materno')          
             ->add('created_at');
     }
 
@@ -65,10 +64,7 @@ final class EmployeeTable extends PowerGridComponent
             Column::make('A. Materno', 'apellido_materno')
                 ->sortable()
                 ->searchable(),  
-                
-            Column::make('Email', 'email')
-                ->sortable()
-                ->searchable(), 
+           
 
             Column::action('Acciones')
         ];
