@@ -15,5 +15,9 @@ class UserCreated
         public User $user,
         public ?string $plainPassword = null
     ) {
+         Log::info('Event.UserCreated', [
+            'tenant_id' => tenant()?->getTenantKey(),
+            'user_id' => $user->id,
+        ]);
     }
 }
