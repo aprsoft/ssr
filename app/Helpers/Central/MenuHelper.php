@@ -46,11 +46,13 @@ class MenuHelper
                     [
                         'name' => 'Listado',
                         'path' => route('central.users.index', absolute: false),
+                        'permission' => 'central.users.index',
                         'pro' => false
                     ],
                     [
                         'name' => 'Crear Usuario',
                         'path' => route('central.users.create', absolute: false),
+                        'permission' => 'central.users.create',
                         'pro' => false
                     ],
                 ],
@@ -112,26 +114,101 @@ class MenuHelper
         ];
     }
 
+    // public static function getMenuGroups(): array
+    // {   
+             
+    //     return [
+    //         [
+    //             'title' => 'Menu',
+    //             'items' => self::getMainNavItems()
+    //         ],
+    //         [
+    //             'title' => 'Administration',
+    //             'items' => self::getAdministrationItems()
+    //         ],
+    //         [
+    //             'title' => 'Roles y Permisos',
+    //             'items' => self::getRolesPermissionsItems()
+    //         ],
+    //         [
+    //             'title' => 'Soporte',
+    //             'items' => self::getSupportItems()
+    //         ]
+    //     ];
+    // }
     public static function getMenuGroups(): array
-    {        
-        return [
+    {
+        $user = auth('web')->user();
+
+        if (!$user) {
+            return [];
+        }
+
+        $groups = [
             [
                 'title' => 'Menu',
-                'items' => self::getMainNavItems()
+                'items' => self::getMainNavItems(),
             ],
             [
                 'title' => 'Administration',
-                'items' => self::getAdministrationItems()
+                'items' => self::getAdministrationItems(),
             ],
             [
                 'title' => 'Roles y Permisos',
-                'items' => self::getRolesPermissionsItems()
+                'items' => self::getRolesPermissionsItems(),
             ],
             [
                 'title' => 'Soporte',
-                'items' => self::getSupportItems()
-            ]
+                'items' => self::getSupportItems(),
+            ],
         ];
+
+        foreach ($groups as &$group) {
+            $items = [];
+
+            foreach ($group['items'] as $item) {
+
+                // Verificar permiso del elemento principal
+                if (
+                    isset($item['permission']) &&
+                    !$user->can($item['permission'])
+                ) {
+                    continue;
+                }
+
+                // Filtrar elementos del submenú
+                if (isset($item['subItems'])) {
+
+                    $item['subItems'] = array_values(
+                        array_filter(
+                            $item['subItems'],
+                            fn (array $subItem) =>
+                                !isset($subItem['permission']) ||
+                                $user->can($subItem['permission'])
+                        )
+                    );
+
+                    // Ocultar menú padre sin opciones visibles
+                    if (empty($item['subItems'])) {
+                        continue;
+                    }
+                }
+
+                $items[] = $item;
+            }
+
+            $group['items'] = $items;
+        }
+
+        unset($group);
+
+        // Ocultar grupos que quedaron sin elementos
+        return array_values(
+            array_filter(
+                $groups,
+                fn (array $group) => !empty($group['items'])
+            )
+        );
     }
 
     public static function isActive($path): bool
