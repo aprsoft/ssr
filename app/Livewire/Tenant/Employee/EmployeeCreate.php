@@ -30,6 +30,8 @@ class EmployeeCreate extends Component
 
     public bool $is_active = true;
 
+    public bool $withoutRoles = false;
+
     public array $roleIds = [];
 
     protected function rules(): array
@@ -77,8 +79,12 @@ class EmployeeCreate extends Component
                 'boolean',
             ],
 
+            'withoutRoles' => [
+                'boolean',
+            ],
+
             'roleIds' => [
-                Rule::requiredIf($this->is_active),
+                Rule::requiredIf($this->is_active && ! $this->withoutRoles),
                 'array',
             ],
 
@@ -93,13 +99,21 @@ class EmployeeCreate extends Component
         'email.required' => 'Debes ingresar el correo electrónico.',
         'email.email' => 'El correo electrónico ingresado no es válido.',
         'email.unique' => 'El correo electrónico ya está registrado.',
-        'roleIds.required' => 'Debes seleccionar al menos un rol.',
+        'roleIds.required' => 'Debes seleccionar al menos un rol o marcar "Sin roles".',
     ];
 
     public function updatedIsActive(bool $isActive): void
     {
         if (! $isActive) {
             $this->roleIds = [];
+        }
+    }
+
+    public function updatedWithoutRoles(bool $withoutRoles): void
+    {
+        if ($withoutRoles) {
+            $this->roleIds = [];
+            $this->resetValidation('roleIds');
         }
     }
 
@@ -141,7 +155,8 @@ class EmployeeCreate extends Component
                 email: $validated['email'],
                 plainPassword: $plainPassword,
                 isActive: $validated['is_active'],
-                roleIds: $validated['roleIds'],
+                // No confiar únicamente en que el selector esté oculto.
+                roleIds: $validated['withoutRoles'] ? [] : $validated['roleIds'],
             );
         } catch (Throwable $exception) {
             session()->flash(

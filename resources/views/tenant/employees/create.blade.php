@@ -10,7 +10,7 @@
             </x-ui.alert>
         @endsession
       
-        <livewire:tenant.customer.customer-create/> 
+        <livewire:tenant.employee.employee-create/> 
       
 @endsection
 
