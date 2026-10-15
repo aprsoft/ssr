@@ -1,14 +1,12 @@
 <?php
 
-// app/Listeners/SendUserCreatedEmail.php
 namespace App\Listeners\Tenant;
 
 use App\Events\Tenant\UserCreated;
 use App\Jobs\SendEmailJob;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
 
-class WelcomeEmailNotification implements ShouldQueue
+
+class WelcomeEmailNotification 
 {
     public function handle(UserCreated $event)
     {
@@ -18,7 +16,7 @@ class WelcomeEmailNotification implements ShouldQueue
 
             $payload = [
                 'to' => $event->user->email,                
-                'subjectLine' => 'Bienvenido !! Eres Nuevo Usuariodel sistema Aprsoft',
+                'subjectLine' => 'Bienvenido !! Eres Nuevo Colobarador de SSR',
                 'viewName' => 'tenant.email.user.user-created',
                 'data'=>$event->user->setAttribute('plainPassword', $event->plainPassword),                               
             ];

@@ -17,25 +17,24 @@ use Throwable;
 class EmployeeCreate extends Component
 {
     public string $rut = '';
-
     public string $nombres = '';
-
     public string $apellido_paterno = '';
-
     public string $apellido_materno = '';
-
     public string $movil = '';
-
     public string $email = '';
 
     public bool $is_active = true;
-
-    public bool $withoutRoles = false;
 
     public array $roleIds = [];
 
     protected function rules(): array
     {
+        $validRoleIds = Role::query()
+            ->where('guard_name', 'tenant')
+            ->where('name', '!=', 'inactive')
+            ->pluck('id')
+            ->all();
+
         return [
             'rut' => [
                 'nullable',
@@ -72,24 +71,22 @@ class EmployeeCreate extends Component
                 'string',
                 'email',
                 'max:255',
-                Rule::unique(User::class, 'email'),
+                // Rule::unique(User::class, 'email'),
             ],
 
             'is_active' => [
+                'required',
                 'boolean',
             ],
 
-            'withoutRoles' => [
-                'boolean',
-            ],
-
-            'roleIds' => [
-                Rule::requiredIf($this->is_active && ! $this->withoutRoles),
-                'array',
-            ],
+            'roleIds' => $this->is_active
+                ? ['required', 'array', 'min:1']
+                : ['array'],
 
             'roleIds.*' => [
                 'integer',
+                'distinct',
+                Rule::in($validRoleIds),
             ],
         ];
     }
@@ -99,19 +96,15 @@ class EmployeeCreate extends Component
         'email.required' => 'Debes ingresar el correo electrónico.',
         'email.email' => 'El correo electrónico ingresado no es válido.',
         'email.unique' => 'El correo electrónico ya está registrado.',
-        'roleIds.required' => 'Debes seleccionar al menos un rol o marcar "Sin roles".',
+        'roleIds.required' => 'Debes seleccionar al menos un rol.',
+        'roleIds.min' => 'Debes seleccionar al menos un rol.',
+        'roleIds.*.in' => 'Uno de los roles seleccionados no es válido.',
+        'roleIds.*.distinct' => 'No puedes repetir un rol.',
     ];
 
     public function updatedIsActive(bool $isActive): void
     {
         if (! $isActive) {
-            $this->roleIds = [];
-        }
-    }
-
-    public function updatedWithoutRoles(bool $withoutRoles): void
-    {
-        if ($withoutRoles) {
             $this->roleIds = [];
             $this->resetValidation('roleIds');
         }
@@ -138,6 +131,11 @@ class EmployeeCreate extends Component
         $this->movil = trim($this->movil);
         $this->email = Str::lower(trim($this->email));
 
+        // Un usuario inactivo nunca recibe roles seleccionados.
+        if (! $this->is_active) {
+            $this->roleIds = [];
+        }
+
         $validated = $this->validate();
 
         $plainPassword = Str::random(8);
@@ -155,8 +153,9 @@ class EmployeeCreate extends Component
                 email: $validated['email'],
                 plainPassword: $plainPassword,
                 isActive: $validated['is_active'],
-                // No confiar únicamente en que el selector esté oculto.
-                roleIds: $validated['withoutRoles'] ? [] : $validated['roleIds'],
+                roleIds: $validated['is_active']
+                    ? $validated['roleIds']
+                    : [],
             );
         } catch (Throwable $exception) {
             session()->flash(
@@ -169,12 +168,9 @@ class EmployeeCreate extends Component
 
         if ($employee->user->is_active) {
             try {
-                event(
-                    new UserCreated(
-                        $employee->user,
-                        $plainPassword
-                    )
-                );
+
+                event(new UserCreated($employee->user,$plainPassword));
+
             } catch (Throwable $exception) {
                 $errorLogger->report($exception, [
                     'operation' => 'tenant.user.created.notification',
@@ -207,11 +203,13 @@ class EmployeeCreate extends Component
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $selectedIds = array_map('intval', $this->roleIds);
+
         $selectedRoles = $roles
             ->filter(
                 fn (Role $role) => in_array(
                     (int) $role->id,
-                    array_map('intval', $this->roleIds),
+                    $selectedIds,
                     true
                 )
             )

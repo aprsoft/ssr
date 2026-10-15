@@ -10,6 +10,8 @@ use App\Services\Central\ErrorLog\ErrorLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use App\Events\Tenant\UserCreated;
+
 use Throwable;
 
 final class EmployeeUserCreator
@@ -28,9 +30,9 @@ final class EmployeeUserCreator
     ): Employee {
         try {
 
-            throw new \RuntimeException(
-            'PRUEBA CONTROLADA: error al crear empleado.'
-            );
+            // throw new \RuntimeException(
+            // 'PRUEBA CONTROLADA: error al crear empleado.'
+            // );
 
             $email = Str::lower(trim($email));
 
@@ -77,12 +79,13 @@ final class EmployeeUserCreator
 
                         $user->syncRoles($roles);
                     } else {
-                        $inactiveRole = Role::query()
-                            ->where('guard_name', 'tenant')
-                            ->where('name', 'inactive')
-                            ->firstOrFail();
+                        // $inactiveRole = Role::query()
+                        //     ->where('guard_name', 'tenant')
+                        //     ->where('name', 'inactive')
+                        //     ->firstOrFail();
 
-                        $user->syncRoles([$inactiveRole]);
+                        // $user->syncRoles([$inactiveRole]);
+                          $user->syncRoles([]);
                     }
 
                     $employee->setRelation('user', $user);
