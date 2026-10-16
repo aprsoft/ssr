@@ -3,6 +3,7 @@
 namespace App\Services\Queue;
 
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Log;
 
 class JobSuccessHandler
 {
@@ -13,6 +14,7 @@ class JobSuccessHandler
 
     public function handle(JobProcessed $event): void
     {
+       
         $this->notificationService->notifySuccess(
             jobClass: $event->job->resolveName(),
             payload: $event->job->payload()

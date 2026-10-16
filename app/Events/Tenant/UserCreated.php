@@ -5,7 +5,6 @@ namespace App\Events\Tenant;
 use App\Models\Tenant\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class UserCreated
 {
@@ -16,9 +15,6 @@ class UserCreated
         public User $user,
         public ?string $plainPassword = null
     ) {
-        Log::info('Event.UserCreated', [
-            'tenant_id' => tenant()?->getTenantKey(),
-            'user_id' => $user->id,
-        ]);
+    
     }
 }
