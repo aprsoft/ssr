@@ -3,7 +3,6 @@
 namespace App\Services\Queue;
 
 use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Support\Facades\Log;
 
 class JobSuccessHandler
 {
