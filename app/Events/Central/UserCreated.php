@@ -5,6 +5,7 @@ namespace App\Events\Central;
 use App\Models\Central\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UserCreated
 {

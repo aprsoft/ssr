@@ -35,7 +35,7 @@ class UserCreate extends Component
                 fn ($query) => $query->where('name', '!=', 'SuperAdmin')
             )
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'guard_name']);
     }
 
     protected function rules(): array
@@ -46,7 +46,7 @@ class UserCreate extends Component
                 'required',
                 'email:dns',
                 'max:40',
-                Rule::unique(User::class, 'email'),
+                // Rule::unique(User::class, 'email'),
             ],
             'roleIds' => ['required', 'array', 'min:1'],
             'roleIds.*' => [
@@ -152,7 +152,9 @@ class UserCreate extends Component
         }
 
         try {
+
             event(new UserCreated($user, $plainPassword));
+
         } catch (Throwable $exception) {
             $errorLogger->report($exception, [
                 'operation' => 'central.user.created.notification',

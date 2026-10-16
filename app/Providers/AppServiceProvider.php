@@ -115,7 +115,7 @@ class AppServiceProvider extends ServiceProvider
 
         /*
         |--------------------------------------------------------------------------
-        | Job procesado correctamente
+        | Job procesado correctament
         |--------------------------------------------------------------------------
         */
         Queue::after(function (JobProcessed $event): void {

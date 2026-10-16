@@ -4,6 +4,7 @@ namespace App\Listeners\Tenant;
 
 use App\Events\Tenant\UserCreated;
 use App\Jobs\SendEmailJob;
+use Illuminate\Support\Facades\Log;
 
 
 class WelcomeEmailNotification 
