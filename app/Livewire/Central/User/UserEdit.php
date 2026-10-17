@@ -206,10 +206,10 @@ class UserEdit extends Component
                 return;
             }
 
-            if ($user->hasRole('SuperAdmin', 'web')) {
-                $this->addError('form', 'No se permite suspender una cuenta SuperAdmin.');
-                return;
-            }
+            // if ($user->hasRole('SuperAdmin', 'web')) {
+            //     $this->addError('form', 'No se permite suspender una cuenta SuperAdmin.');
+            //     return;
+            // }
         }
 
         try {

@@ -136,7 +136,6 @@
                         </button>
                     @elseif (
                         (int) $user->id !== (int) auth('web')->id()
-                        && ! $user->hasRole('SuperAdmin', 'web')
                     )
                         <button
                             type="button"
