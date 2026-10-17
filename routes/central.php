@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
     })->name('central.home'); 
 
     Route::get('/', function () {
-        return redirect()->route('central.dashboard');
-    })->name('central.page');
+        return view('web.site');
+    });
 
 
     Route::middleware(['auth'])->name('central.')->prefix('central')->group(function () {
