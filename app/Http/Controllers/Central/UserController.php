@@ -14,6 +14,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        abort_if((int) $user->getKey() === 1, 404);
         return view('central.users.show',['title'=>'Mostrar Usuario','user'=> $user]);
     }
 
@@ -24,6 +25,7 @@ class UserController extends Controller
   
     public function edit(User $user)
     {
+        abort_if((int) $user->getKey() === 1, 404);
         return  view('central.users.edit',['title'=>'Editar Usuario','user'=>$user]);
     }
 

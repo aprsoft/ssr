@@ -143,7 +143,8 @@
                             wire:confirm="¿Confirmas que deseas suspender este usuario?"
                             wire:loading.attr="disabled"
                             wire:target="suspend"
-                            class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-600 disabled:opacity-50"
+                            style="background-color: #dc2626; color: #ffffff;"
+                            class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition hover:opacity-90 disabled:opacity-50"
                         >
                             Suspender usuario
                         </button>

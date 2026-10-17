@@ -34,7 +34,7 @@ final class UserTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return User::query();
+        return User::withTrashed()->where('id', '!=', 1);
     }
 
     public function relationSearch(): array
@@ -47,8 +47,20 @@ final class UserTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('id')
             ->add('name')
-            ->add('email')
-            ->add('created_at');
+            ->add('email')          
+            ->add('estado', function ($tenant) {
+            if ($tenant->trashed()) {
+                return '<span class="inline-flex items-center gap-1 text-red-600 font-medium">
+                            <span class="text-lg">✕</span>
+                            Suspendido
+                        </span>';
+            }
+
+            return '<span class="inline-flex items-center gap-1 text-green-600 font-medium">
+                        <span class="text-lg">✓</span>
+                        Activo
+                    </span>';
+            });
     }
 
     public function columns(): array
@@ -63,7 +75,10 @@ final class UserTable extends PowerGridComponent
 
             Column::make('Email', 'email')
                 ->sortable()
-                ->searchable(),            
+                ->searchable(),  
+                
+            Column::make('Estado', 'estado'),
+               
 
             Column::action('Acciones')
         ];

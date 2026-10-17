@@ -17,6 +17,7 @@ class UserShow extends Component
     {
         // El componente está incluido en una vista Blade y no recibe props.
         // Obtenemos el usuario ya resuelto por la ruta central.
+        abort_if((int) $user->getKey() === 1, 404);
         abort_if(tenant() !== null, 404);
         abort_unless(auth('web')->user()?->can('central.users.index'), 403);
 
@@ -29,6 +30,7 @@ class UserShow extends Component
 
     public function render()
     {
+        abort_if($this->userId === 1, 404);
         abort_if(tenant() !== null, 404);
         abort_unless(auth('web')->user()?->can('central.users.index'), 403);
 
