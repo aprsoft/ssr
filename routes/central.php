@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('/', function () {
         return redirect()->route('central.dashboard');
-    })->name('central.home');
+    })->name('central.page');
 
 
     Route::middleware(['auth'])->name('central.')->prefix('central')->group(function () {
