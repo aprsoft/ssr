@@ -27,53 +27,37 @@ class UserEdit extends Component
     public function mount(): void
     {
         abort_if(tenant() !== null, 404);
-
-        abort_unless(
-            auth('web')->user()?->can('central.users.edit'),
-            403
-        );
+        abort_unless(auth('web')->user()?->can('central.users.edit'), 403);
 
         $user = request()->route('user');
-
         abort_unless($user instanceof User, 404);
 
         $this->userId = (int) $user->getKey();
-
-        $this->assertCanManage($user);
-
         $this->name = $user->name ?? '';
         $this->email = $user->email ?? '';
+
+        $allowedIds = array_map('intval', $this->assignableRoles()->modelKeys());
 
         $this->roleIds = $user->roles()
             ->where('guard_name', 'web')
             ->pluck('id')
             ->map(fn ($id) => (int) $id)
+            ->filter(fn (int $id) => in_array($id, $allowedIds, true))
+            ->values()
             ->all();
-    }
-
-    private function assertCanManage(User $user): void
-    {
-        abort_if(
-            $user->hasRole('SuperAdmin', 'web')
-            && ! auth('web')->user()?->hasRole('SuperAdmin', 'web'),
-            403
-        );
     }
 
     private function editingUser(): User
     {
         abort_if(tenant() !== null, 404);
+        abort_unless(auth('web')->user()?->can('central.users.edit'), 403);
 
-        abort_unless(
-            auth('web')->user()?->can('central.users.edit'),
-            403
-        );
+        return User::withTrashed()->findOrFail($this->userId);
+    }
 
-        $user = User::withTrashed()->findOrFail($this->userId);
-
-        $this->assertCanManage($user);
-
-        return $user;
+    private function canAssignSuperAdmin(): bool
+    {
+        return auth('web')->user()?->can('central.users.assign-superadmin') ?? false;
     }
 
     private function assignableRoles(): Collection
@@ -81,10 +65,22 @@ class UserEdit extends Component
         return Role::query()
             ->where('guard_name', 'web')
             ->when(
-                ! auth('web')->user()?->hasRole('SuperAdmin', 'web'),
+                ! $this->canAssignSuperAdmin(),
                 fn ($query) => $query->where('name', '!=', 'SuperAdmin')
             )
             ->orderBy('name')
+            ->get(['id', 'name', 'guard_name']);
+    }
+
+    private function protectedRoles(User $user): Collection
+    {
+        if ($this->canAssignSuperAdmin()) {
+            return new Collection();
+        }
+
+        return $user->roles()
+            ->where('guard_name', 'web')
+            ->where('name', 'SuperAdmin')
             ->get(['id', 'name', 'guard_name']);
     }
 
@@ -92,17 +88,13 @@ class UserEdit extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-
             'email' => [
                 'required',
                 'email:dns',
                 'max:40',
-                Rule::unique(User::class, 'email')
-                    ->ignore($this->userId),
+                Rule::unique(User::class, 'email')->ignore($this->userId),
             ],
-
-            'roleIds' => ['required', 'array', 'min:1'],
-
+            'roleIds' => ['array'],
             'roleIds.*' => [
                 'integer',
                 'distinct',
@@ -118,8 +110,6 @@ class UserEdit extends Component
         'email.email' => 'El correo electrónico no es válido.',
         'email.max' => 'El correo electrónico no puede superar los 40 caracteres.',
         'email.unique' => 'El correo electrónico ya está registrado.',
-        'roleIds.required' => 'Debes seleccionar al menos un rol.',
-        'roleIds.min' => 'Debes seleccionar al menos un rol.',
         'roleIds.*.in' => 'Uno de los roles seleccionados no está permitido.',
         'roleIds.*.distinct' => 'No puedes seleccionar un rol más de una vez.',
     ];
@@ -140,7 +130,6 @@ class UserEdit extends Component
 
         $this->name = trim($this->name);
         $this->email = Str::lower(trim($this->email));
-
         $validated = $this->validate();
 
         try {
@@ -148,8 +137,6 @@ class UserEdit extends Component
                 $user = User::withTrashed()
                     ->lockForUpdate()
                     ->findOrFail($this->userId);
-
-                $this->assertCanManage($user);
 
                 $roles = $this->assignableRoles()
                     ->whereIn('id', $validated['roleIds']);
@@ -160,10 +147,22 @@ class UserEdit extends Component
                     ]);
                 }
 
+                // Conserva los roles que el operador no está autorizado a modificar.
+                $rolesToSync = $roles
+                    ->concat($this->protectedRoles($user))
+                    ->unique('id')
+                    ->values();
+
+                if ($rolesToSync->isEmpty()) {
+                    throw ValidationException::withMessages([
+                        'roleIds' => 'Debes conservar o seleccionar al menos un rol.',
+                    ]);
+                }
+
                 if (
                     (int) auth('web')->id() === (int) $user->id
                     && $user->hasRole('SuperAdmin', 'web')
-                    && ! $roles->contains('name', 'SuperAdmin')
+                    && ! $rolesToSync->contains('name', 'SuperAdmin')
                 ) {
                     throw ValidationException::withMessages([
                         'roleIds' => 'No puedes quitarte tu propio rol SuperAdmin.',
@@ -173,8 +172,7 @@ class UserEdit extends Component
                 $user->name = $validated['name'];
                 $user->email = $validated['email'];
                 $user->save();
-
-                $user->syncRoles($roles);
+                $user->syncRoles($rolesToSync);
             });
 
         } catch (ValidationException $exception) {
@@ -187,49 +185,29 @@ class UserEdit extends Component
                 'error_type' => 'unexpected',
             ]);
 
-            $this->addError(
-                'form',
-                'Ocurrió un error al actualizar el usuario.'
-            );
-
+            $this->addError('form', 'Ocurrió un error al actualizar el usuario.');
             return;
         }
 
-        session()->flash(
-            'success',
-            'El usuario fue actualizado correctamente.'
-        );
+        session()->flash('success', 'El usuario fue actualizado correctamente.');
 
         return redirect()->route('central.users.index');
     }
 
-    private function changeSuspension(
-        bool $suspend,
-        ErrorLogger $errorLogger
-    ): void {
+    private function changeSuspension(bool $suspend, ErrorLogger $errorLogger): void
+    {
         $user = $this->editingUser();
 
-        abort_unless(
-            auth('web')->user()?->can('central.users.destroy'),
-            403
-        );
+        abort_unless(auth('web')->user()?->can('central.users.destroy'), 403);
 
         if ($suspend) {
             if ((int) $user->id === (int) auth('web')->id()) {
-                $this->addError(
-                    'form',
-                    'No puedes suspender tu propia cuenta.'
-                );
-
+                $this->addError('form', 'No puedes suspender tu propia cuenta.');
                 return;
             }
 
             if ($user->hasRole('SuperAdmin', 'web')) {
-                $this->addError(
-                    'form',
-                    'No se permite suspender una cuenta SuperAdmin.'
-                );
-
+                $this->addError('form', 'No se permite suspender una cuenta SuperAdmin.');
                 return;
             }
         }
@@ -244,7 +222,6 @@ class UserEdit extends Component
             }
 
             $this->resetErrorBag('form');
-
             $this->statusMessage = $suspend
                 ? 'El usuario fue suspendido correctamente.'
                 : 'El usuario fue reactivado correctamente.';
@@ -258,10 +235,7 @@ class UserEdit extends Component
                 'error_type' => 'unexpected',
             ]);
 
-            $this->addError(
-                'form',
-                'No fue posible modificar el estado del usuario.'
-            );
+            $this->addError('form', 'No fue posible modificar el estado del usuario.');
         }
     }
 
@@ -278,20 +252,19 @@ class UserEdit extends Component
     public function render()
     {
         $user = $this->editingUser();
-
         $roles = $this->assignableRoles();
         $selectedIds = array_map('intval', $this->roleIds);
+
+        $selectedRoles = $roles
+            ->filter(fn (Role $role) => in_array((int) $role->id, $selectedIds, true))
+            ->concat($this->protectedRoles($user))
+            ->unique('id')
+            ->values();
 
         return view('livewire.central.user.user-edit', [
             'user' => $user,
             'roles' => $roles,
-            'selectedRoles' => $roles->filter(
-                fn (Role $role) => in_array(
-                    (int) $role->id,
-                    $selectedIds,
-                    true
-                )
-            ),
+            'selectedRoles' => $selectedRoles,
         ]);
     }
 }
