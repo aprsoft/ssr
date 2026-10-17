@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('/', function () {
         return view('web.site');
-    });
+    })->name('central.website'); 
 
 
     Route::middleware(['auth'])->name('central.')->prefix('central')->group(function () {
