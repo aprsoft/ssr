@@ -14,6 +14,9 @@ use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use Throwable;
 
+use Livewire\Attributes\On;
+
+
 class UserEdit extends Component
 {
     #[Locked]
@@ -239,6 +242,33 @@ class UserEdit extends Component
         }
     }
 
+
+    #[On('central-user-suspend-confirmed')]
+    public function confirmSuspend(
+        int $id,
+        ErrorLogger $errorLogger
+    ): void {
+        // Verificar que la confirmación corresponda
+        // al usuario que se está editando.
+        abort_unless($id === $this->userId, 404);
+
+        // Reutilizar el método existente,
+        // conservando autorización y validaciones.
+        $this->suspend($errorLogger);
+    }
+
+    #[On('central-user-reactivate-confirmed')]
+    public function confirmReactivate(
+        int $id,
+        ErrorLogger $errorLogger
+    ): void {
+        abort_unless($id === $this->userId, 404);
+
+        $this->reactivate($errorLogger);
+    }
+
+
+   
     public function suspend(ErrorLogger $errorLogger): void
     {
         $this->changeSuspension(true, $errorLogger);

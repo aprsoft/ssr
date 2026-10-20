@@ -124,7 +124,7 @@
 
                 @can('central.users.destroy')
                     @if ($user->trashed())
-                        <button
+                        {{-- <button
                             type="button"
                             wire:click="reactivate"
                             wire:confirm="¿Deseas reactivar este usuario?"
@@ -133,11 +133,36 @@
                             class="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                         >
                             Reactivar usuario
+                        </button> --}}
+
+                        <button
+                            type="button"
+                            x-on:click="$dispatch('open-confirm-modal', {
+                                id: {{ (int) $user->id }},
+                                name: @js($user->name),
+                                confirmEvent: 'central-user-reactivate-confirmed',
+                                title: 'Reactivar usuario',
+                                message: '¿Estás seguro de que deseas reactivar esta cuenta?',
+                                warning: 'El usuario recuperará el acceso al sistema y conservará sus datos y roles.',
+                                confirmLabel: 'Sí, reactivar'
+                            })"
+                            wire:loading.attr="disabled"
+                            wire:target="confirmReactivate"
+                            class="inline-flex items-center justify-center
+                                rounded-lg bg-green-600 px-4 py-2
+                                text-sm font-semibold text-white
+                                shadow-sm transition
+                                hover:bg-green-700
+                                disabled:cursor-not-allowed
+                                disabled:opacity-50"
+                        >
+                            Reactivar usuario
                         </button>
+
                     @elseif (
                         (int) $user->id !== (int) auth('web')->id()
                     )
-                        <button
+                        {{-- <button
                             type="button"
                             wire:click="suspend"
                             wire:confirm="¿Confirmas que deseas suspender este usuario?"
@@ -147,7 +172,33 @@
                             class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition hover:opacity-90 disabled:opacity-50"
                         >
                             Suspender usuario
+                        </button> --}}
+
+
+                        <button
+                            type="button"
+                            x-on:click="$dispatch('open-confirm-modal', {
+                                id: {{ (int) $user->id }},
+                                name: @js($user->name),
+                                confirmEvent: 'central-user-suspend-confirmed',
+                                title: 'Suspender usuario',
+                                message: '¿Estás seguro de que deseas suspender esta cuenta?',
+                                warning: 'El usuario perderá acceso al sistema. Sus datos y roles se conservarán.',
+                                confirmLabel: 'Sí, suspender'
+                            })"
+                            wire:loading.attr="disabled"
+                            wire:target="confirmSuspend"
+                            class="inline-flex items-center justify-center
+                                rounded-lg bg-red-600 px-4 py-2
+                                text-sm font-semibold text-white
+                                shadow-sm transition
+                                hover:bg-red-700
+                                disabled:cursor-not-allowed
+                                disabled:opacity-50"
+                        >
+                            Suspender usuario
                         </button>
+
                     @else
                         <p class="text-sm text-gray-500 dark:text-gray-400">
                             Esta cuenta está protegida contra suspensión.
