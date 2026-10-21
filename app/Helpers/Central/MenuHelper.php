@@ -72,11 +72,13 @@ class MenuHelper
                     [                        
                         'name' => 'listado',
                         'path' => route('central.roles.index', absolute: false),
+                        'permission' => 'central.roles.index',
                         'pro'  => false
                     ],
                     [                        
                         'name' => 'Crear Roles',
                         'path' => route('central.roles.create', absolute: false),
+                        'permission' => 'central.roles.create',
                         'pro'  => false
                     ],
                     
@@ -89,11 +91,13 @@ class MenuHelper
                     [                        
                         'name' => 'Listado',
                         'path' => route('central.permissions.index', absolute: false),
+                        'permission' => 'central.permissions.index',
                         'pro'  => false
                     ],
                     [                        
                         'name' => 'Crear Permiso',
                         'path' => route('central.permissions.create', absolute: false),
+                        'permission' => 'central.permissions.create',
                         'pro'  => false
                     ],
                     
