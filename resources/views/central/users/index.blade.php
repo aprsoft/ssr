@@ -4,6 +4,9 @@
     <x-common.page-breadcrumb pageTitle="Usuarios" />
 
     <div class="space-y-6">
+
         <livewire:central.user.user-table/> 
+        
+    </div>
 @endsection
 

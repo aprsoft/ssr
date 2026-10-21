@@ -3,14 +3,10 @@
 @section('content')
     <x-common.page-breadcrumb pageTitle={{$title}} />
 
-    <div class="space-y-6">
-        @session('success')
-            <x-ui.alert variant="success">
-                {{ $value }}
-            </x-ui.alert>
-        @endsession
+    <div class="space-y-6">      
       
         <livewire:central.user.user-create/>
-      
+        
+    </div>
 @endsection
 

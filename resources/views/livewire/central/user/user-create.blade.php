@@ -82,7 +82,7 @@
                     </label>
                 @empty
                     <p class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                        No existen roles disponibles.
+                        No existen roles disponibles
                     </p>
                 @endforelse
             </div>
@@ -92,7 +92,7 @@
             @enderror
         </div>
     </div>
-
+     
     <x-slot:actions>
         <x-button label="Guardar" class="btn-primary" type="submit" spinner="save" />
     </x-slot:actions>

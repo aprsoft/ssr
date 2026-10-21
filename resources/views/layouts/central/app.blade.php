@@ -8,7 +8,7 @@
     <link rel="icon" href="{{ global_asset('images/logo/gota-de-agua.png') }}" type="image/png">
 
 
-    <title>{{ $title ?? 'Dashboard' }} | APRSOFT</title>
+    <title>{{ $title ?? 'No Define' }} | APRSOFT</title>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
